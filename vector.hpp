@@ -229,13 +229,55 @@ namespace ft
 			_size--;
 		}
 
-		void assign(iterator first, iterator last)
-		{
-			//clear();
-			//insert(begin(), first, last);
-		}
+	template <class InputIterator>
+		void assign (InputIterator first, InputIterator last) {
+			size_type n = first - last;
+			iterator tmp = begin();
+			iterator end = end();
+			if (n > _cap)
+				realloc(n);
+			for (; tmp != end && first != last; tmp++)
+			{
+				_alloc.destroy(tmp);
+				*tmp = _alloc.construct(tmp, *first++);
+			}
+			if (tmp == end)
+			{
+				for (; first != last; tmp++)
+					*tmp = _alloc.construct(tmp, *first++);
+			}
+			else
+			{
+				for (; tmp != end; tmp++)
+					_alloc.destroy(tmp);
+			}
+			_size = n;
+		  }
 
-		void assign(size_type n, const value_type& val);
+		void assign (size_type n, const value_type& val) {
+			iterator tmp = begin();
+			iterator end = end();
+			if (n > _cap)
+				realloc(n);
+			for (; tmp != end; tmp++)
+			{
+				_alloc.destroy(tmp);
+				*tmp = _alloc.construct(tmp, value_type(val);
+			}
+			if (tmp == end)
+			{
+				for (int j = _size; j < n; j++)
+				{
+					*tmp = _alloc.construct(tmp, value_type(val));
+					tmp++;
+				}
+			}
+			else
+			{
+				for (; tmp != end; tmp++)
+					_alloc.destroy(tmp);
+			}
+		}
 
 		iterator insert(iterator position, const value_type& val) {
 			reverse_iterator it = end();
