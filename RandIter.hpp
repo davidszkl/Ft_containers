@@ -61,12 +61,14 @@ public:
 	}
 
     RandIter<T> operator++(int dummy){
+		(void)dummy;
 		RandIter<T> tmp = *this;
 		operator++();
 		return tmp;
 	}
 
     RandIter<T>	operator--(int dummy){
+		(void)dummy;
 		RandIter<T> tmp = *this;
 		operator--();
 		return tmp;

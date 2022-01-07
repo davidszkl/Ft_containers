@@ -1,6 +1,7 @@
 #include <iostream>
 #include "RandIter.hpp"
 #include "ReverseRandIter.hpp"
+#include "vector.hpp"
 #include <algorithm>
 int main()
 {	

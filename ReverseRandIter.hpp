@@ -61,12 +61,14 @@ public:
 	}
 
     ReverseRandIter<T> operator++(int dummy){
+		(void)dummy;
 		ReverseRandIter<T> tmp = *this;
 		operator--();
 		return tmp;
 	}
 
     ReverseRandIter<T>	operator--(int dummy){
+		(void)dummy;
 		ReverseRandIter<T> tmp = *this;
 		operator++();
 		return tmp;
