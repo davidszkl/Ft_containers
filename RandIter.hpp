@@ -18,10 +18,10 @@ class RandIter
 {
 public:
 
-	typedef T value_type;
-    typedef std::ptrdiff_t difference_type;
-    typedef T *pointer;
-    typedef T &ref;
+	typedef T 				value_type;
+    typedef std::ptrdiff_t	difference_type;
+    typedef T*				pointer;
+    typedef T&				ref;
 
 // CONSTRUCTORS, DESTRUCTORS ===================================================
 
@@ -37,7 +37,7 @@ public:
 		*this = src;
 	}
 
-	~RandIter(){}
+	virtual ~RandIter(){}
 
 	RandIter<T> &operator=(const RandIter&rhs)
 	{

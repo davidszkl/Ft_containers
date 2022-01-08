@@ -37,7 +37,7 @@ public:
 		*this = src;
 	}
 
-	~ReverseRandIter(){}
+	virtual ~ReverseRandIter(){}
 
 	ReverseRandIter<T> &operator=(const ReverseRandIter&rhs)
 	{
