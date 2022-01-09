@@ -13,6 +13,7 @@
 #include <memory>
 #include "RandIter.hpp"
 #include "ReverseRandIter.hpp"
+#include "utils.hpp"
 
 namespace ft
 {
@@ -42,10 +43,20 @@ namespace ft
 		size_type			_cap;
 
 		void	realloc(size_type n) {
+			size_type tmp_cap = _cap;
+			while (tmp_cap < n)
+				tmp_cap *= 2;
+			pointer buff = _alloc.allocate(tmp_cap);
+			pointer ptr1 = &_arr[0];
+			pointer ptr2 = &buff[0];
+			for (size_type n = 0; n < _size; n++, ptr1++, ptr2++)
+			{
+				_alloc.construct(ptr2, *ptr1);
+				_alloc.destroy(ptr1);
+			}
 			_alloc.deallocate(_arr, _cap);
-			while (_cap < n)
-				_cap *= 2;
-			_arr = _alloc.allocate(_cap);
+			_cap = tmp_cap;
+			_arr = buff;
 		}
 	
 	public:
@@ -67,11 +78,12 @@ namespace ft
 		}
 
 	template <class InputIterator>
-		vector (InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type()):
+		vector (InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type(), typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type*  = nullptr):
 			_alloc(alloc),
 			_size(1),
 			_cap(1)
 		{
+			_arr = _alloc.allocate(_cap);
 			InputIterator tmp = first;
 			while (tmp != last)
 			{
@@ -82,8 +94,9 @@ namespace ft
 				_cap *= 2;
 			_arr = _alloc.allocate(_cap, 0);
 			pointer ptr = &_arr[0];
-			for (size_type n = 0; n < _size; n++, ptr++, first++)
-				_alloc.construct(ptr, *first);
+			tmp = first;
+			for (size_type n = 0; n < _size; n++, ptr++, tmp++)
+				_alloc.construct(ptr, tmp);
 		}
 
 		vector (const vector &x) {
@@ -124,12 +137,12 @@ namespace ft
 
 		iterator 				begin()	 {return iterator(&_arr[0]);}
 		iterator				end()	 {return iterator(&_arr[_size]);}
-		reverse_iterator		rbegin() {return iterator(&_arr[_size - 1]);}
-		reverse_iterator		rend()	 {return iterator(&_arr[-1]);}
+		reverse_iterator		rbegin() {return reverse_iterator(&_arr[_size - 1]);}
+		reverse_iterator		rend()	 {return reverse_iterator(&_arr[-1]);}
 		const_iterator 			begin()	 const {return const_iterator(&_arr[0]);}
 		const_iterator 			end()	 const {return const_iterator(&_arr[_size]);}
-		const_reverse_iterator	rbegin() const {return const_iterator(&_arr[_size - 1]);}
-		const_reverse_iterator	rend()	 const {return const_iterator(&_arr[-1]);}
+		const_reverse_iterator	rbegin() const {return reverse_const_iterator(&_arr[_size - 1]);}
+		const_reverse_iterator	rend()	 const {return reverse_const_iterator(&_arr[-1]);}
 
 	//-----------------------------------------<< Capacity >>--------------------------------------------------
 
@@ -140,18 +153,18 @@ namespace ft
 
 		void	resize(size_type n, value_type val = value_type()) {
 			pointer		ptr = &_arr[_size - 1];
-			iterator	tmp = end();
 			if (n < _size)
-				while (_size-- > n)
+				while (_size-- > n + 1)
 					_alloc.destroy(ptr--);
 			else
 			{
 				if (n > _cap)
 					realloc(n);
 				ptr = &_arr[_size];
-				for (int j = 0; j < (n - _size); j++)
+				size_type j = 0;
+				for (; j < (n - _size); j++)
 					_alloc.construct(ptr++, val);
-				_size += n;
+				_size += j;
 			}
 		}
 
@@ -167,7 +180,7 @@ namespace ft
 		reference		back() {return _arr[_size - 1];}
 		reference		at(size_type n) {
 			if (n >= _size)
-				throw std::out_of_range("out of range");
+				throw std::out_of_range("vector");
 			return _arr[n];
 		}
 
@@ -176,27 +189,27 @@ namespace ft
 		const_reference	back()  const {return _arr[_size - 1];}
 		const_reference	at(size_type n) const {
 			if (n >= _size)
-				throw std::out_of_range("out of range");
+				throw std::out_of_range("vector");
 			return _arr[n];
 		}
 
 	//-----------------------------------------<< Modifiers >>-------------------------------------------------
 
 	template <class InputIterator>
-		void assign (InputIterator first, InputIterator last) {
-			size_type n = first - last;
+		void assign (InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type*  = nullptr) {
+			size_type n = last - first;
 			if (n > _cap)
 				realloc(n);
 			pointer ptr = &_arr[0];
-			for (size_type n = 0; n < _size && first != last; ptr++, first++)
+			for (size_type n = 0; n < _size && first != last; n++, ptr++, first++)
 			{
 				_alloc.destroy(ptr);
-				_alloc.construct(ptr, *first++);
+				_alloc.construct(ptr, first);
 			}
 			if (n == _size)
 			{
 				for (; first != last; ptr++, first++)
-					_alloc.construct(ptr, *first);
+					_alloc.construct(ptr, first);
 			}
 			else
 			{
@@ -211,7 +224,7 @@ namespace ft
 				realloc(n);
 			pointer ptr = &_arr[0];
 			size_type j = 0;
-			for (; j < _size && j < n; ptr++)
+			for (; j < _size && j < n; j++, ptr++)
 			{
 				_alloc.destroy(ptr);
 				_alloc.construct(ptr, val);
@@ -273,13 +286,11 @@ namespace ft
 		}
 
 	template <class InputIterator>
-		void insert (iterator position, InputIterator first, InputIterator last) {
+		void insert (iterator position, InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type*  = nullptr) {
 			size_type			n = first - last;
 			reverse_iterator	it = rbegin() + n;
 			iterator			rstart = position + n;
 			pointer swap;
-			if (_size + n >= _cap)
-				realloc(_size + n + 1);
 			for (; it != rstart; it++)
 			{
 				swap = *it;
@@ -293,26 +304,39 @@ namespace ft
 
 		iterator erase(iterator position) {
 			iterator tmp = position;
-			iterator Rend = end() - 1;
-
-			_alloc.destroy(position);
-			for (; position != Rend; position++)
+			pointer ptr = &_arr[0];
+			size_type pos = 0;
+			while (position-- != tmp && ptr++)
+				pos++;
+			_alloc.destroy(ptr);
+			for (; pos < _size - 1; pos++)
 			{
-				_alloc.construct(position, *(position + 1));
-				_alloc.destroy(position + 1);
+				ptr = ptr + 1;
+				_alloc.destroy(ptr + 1);
 			}
+			ptr = nullptr;
 			_size--;
 			return tmp;
 		}	
 
 		iterator erase(iterator first, iterator last) {
+			iterator it = begin();
 			iterator tmp = first;
-			iterator Rend = end() - 1;
-
-			for (; tmp != last && tmp != Rend; tmp++)
+			iterator tmp2 = last;
+			pointer  ptr1 = &_arr[0];
+			pointer  ptr2 = &_arr[0];
+			size_type ptr1_pos = 0;
+			size_type ptr2_pos = 0;
+			while (it++ != tmp && ptr1++)
+				ptr1_pos++;
+			it = begin();
+			while (it++ != tmp2 && ptr2++)
+				ptr2_pos++;
+			size_type diff = ptr2_pos - ptr1_pos;
+			_alloc.destroy(ptr1);
+			while (diff--)
 			{
-				_alloc.destroy(tmp);
-				_alloc.construct(tmp, *(tmp + 1));
+				ptr1 = ptr1 + 1;
 				_alloc.destroy(tmp + 1);
 				_size--;
 			}
@@ -337,10 +361,9 @@ namespace ft
 		}
 
 		void clear() {
-			iterator it = begin();
-			iterator it2 = end();
-			for (; it != it2; it++)
-				_alloc.destroy(it);
+			pointer ptr = &_arr[0];
+			for (size_type n = 0; n < _size; n++, ptr++)
+				_alloc.destroy(ptr);
 			_size = 0;
 		}
 
