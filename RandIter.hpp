@@ -96,6 +96,14 @@ public:
 		return tmp;
 	}
 
+	difference_type	operator-(RandIter<T> const& rhs)	const{
+		difference_type diff = 0;
+		RandIter<T> tmp(*this);
+		while (tmp++ != rhs)
+			diff++;
+		return diff;
+	}
+
 	T&	operator[](difference_type offset)	const{
 		return ptr[offset];
 	}

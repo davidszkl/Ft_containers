@@ -1,9 +1,7 @@
 #include <iostream>
-#include "RandIter.hpp"
-#include "ReverseRandIter.hpp"
-#include "vector.hpp"
 #include <algorithm>
 #include <vector>
+#include "vector.hpp"
 
 typedef ft::vector<int, std::allocator<int> > ft_vec;
 typedef std::vector<int, std::allocator<int> > st_vec;
@@ -17,22 +15,51 @@ void show(ft_vec mine, st_vec stl) {
 	it2--;
 	it4--;
 	std::cout << "mine(" << mine.size() << " / " << mine.capacity() << "): {";
+	if (!mine.size())
+		std::cout << "}\n";
+	else
+	{
+		for (; it1 != it2; it1++)
+			std::cout << *it1 << ", ";
+		std::cout << *it1 << "}" << std::endl;
+	}
+	std::cout << "stl(" << stl.size() << " / " << stl.capacity() << "):  {";
+	if (!stl.size())
+		std::cout << "}\n";
+	else
+	{
+		for (; it3 != it4; it3++)
+			std::cout << *it3 << ", ";
+		std::cout << *it3 << "}" << std::endl << std::endl;
+	}
+}
+
+void show1(ft_vec mine2, st_vec stl2) {
+	ft::vector<int>::iterator it1 = mine2.begin();
+	ft::vector<int>::iterator it2 = mine2.end();
+	std::vector<int>::iterator it3 = stl2.begin();
+	std::vector<int>::iterator it4 = stl2.end();
+	it2--;
+	it4--;
+	std::cout << "mine_2(" << mine2.size() << " / " << mine2.capacity() << "): {";
 	for (; it1 != it2; it1++)
 		std::cout << *it1 << ", ";
 	std::cout << *it1 << "}" << std::endl;
-	std::cout << "stl(" << stl.size() << " / " << stl.capacity() << "):  {";
+	std::cout << "stl2(" << stl2.size() << " / " << stl2.capacity() << "):  {";
 	for (; it3 != it4; it3++)
 		std::cout << *it3 << ", ";
-	std::cout << *it3 << "}" << std::endl << std::endl;
+	std::cout << *it3 << "}" << std::endl;
 }
 
 int main()
 {	
 	std::allocator<int> alloc;
 	ft_vec   mine(5, 10);
-	ft_vec   mine2(5, 10);
+	ft_vec   mine2(5, 42);
 	ft_vec   empty(0);
 	st_vec  stl(5, 10);
+	st_vec  stl2(5, 6);
+	st_vec	stl_empty(0);
 	ft::vector<int>::iterator				mine_it1 = mine.begin();
 	ft::vector<int>::iterator				mine_it2 = mine.end();
 	ft::vector<int>::reverse_iterator		mine_Rit1 = mine.rbegin();
@@ -43,9 +70,8 @@ int main()
 	std::vector<int>::reverse_iterator		stl_Rit2 = stl.rend();
 
 	std::cout << "\n==========ITERATORS===========" << std::endl;
-	mine.push_back(5);
-	stl.push_back(5);
 	show(mine, stl);
+	show1(mine2, stl2);
 	std::cout << "mine_it1:  " << *mine_it1 << std::endl;
 	std::cout << "mine_it2:  " << *mine_it2++ << std::endl;
 	std::cout << "mine_rit1: " << *mine_Rit1 << std::endl;
@@ -137,5 +163,128 @@ int main()
 	std::cout << "stl:  " << stl.back() << std::endl << std::endl;
 
 	std::cout << "==========MODIFIERS===========" << std::endl;
+	show1(mine2, stl2);
+	show(mine, stl);
+
+	std::cout << "-------RANGE_ASSIGN(mine assigned with mine_2, stl assigned with stl_2) :" << std::endl;
+	mine.assign(mine2.begin(), mine2.end());
+	stl.assign(stl2.begin(), stl2.end());
+	show1(mine2, stl2);
+	show(mine, stl);
+
+	std::cout << "-------VALUE_ASSIGN(mine2 assigned with 10,15 ; stl assigned with 10,15) :" << std::endl;
+	mine2.assign(10, 15);
+	stl2.assign(10, 15);
+	std::cout << mine2.size() << std::endl;
+	show1(mine2, stl2);
+	show(mine, stl);
+
+	std::cout << "--------PUSH_BACK/POP_BACK :" << std::endl;
+	std::cout << "push 5 numbers, pop 5 numbers" << std::endl;
+	for (int j = 0; j < 5; j++)
+	{
+		mine.push_back(j + 1);
+		stl.push_back(j + 1);
+		show(mine, stl);
+	}
+
+	std::cout << "---------INSERT 1 at 0, 1, end" << std::endl;
+	mine.assign(10, 0);
+	stl.assign(10, 0);
+	show(mine, stl);
+
+	mine.insert(mine.begin(), 1);
+	stl.insert(stl.begin(), 1);
+	show(mine, stl);
+
+	mine.insert(mine.begin() + 1, 1);
+	stl.insert(stl.begin() + 1, 1);
+	show(mine, stl);
+
+	mine.insert(mine.begin() + mine.size(), 1);
+	stl.insert(stl.begin() + stl.size(), 1);
+	show(mine, stl);
+
+	std::cout << "---------INSERT 5 numbers at 0, 1, end" << std::endl;
+	mine.assign(10, 0);
+	stl.assign(10, 0);
+	for (int j = 0; j < 10; j++)
+	{
+		mine[j] = j + 1;
+		stl[j] = j + 1;
+	}
+	show(mine, stl);
+
+	mine.insert(mine.begin(), 5, 0);
+	stl.insert(stl.begin(), 5, 0);
+	show(mine, stl);
+
+	mine.insert(mine.begin() + 1, 5, 0);
+	stl.insert(stl.begin() + 1, 5, 0);
+	show(mine, stl);
+
+	mine.insert(mine.begin() + mine.size(), 5, 0);
+	stl.insert(stl.begin() + stl.size(), 5, 0);
+	show(mine, stl);
+
+	std::cout << "---------INSERT range of 5 numbers at 0, 1, end" << std::endl;
+	mine.assign(10, 0);
+	stl.assign(10, 0);
+	mine2.assign(10, 0);
+	stl2.assign(10, 0);
+	for (int j = 0; j < 10; j++)
+	{
+		mine2[j] = j + 1;
+		stl2[j] = j + 1;
+	}
+	show1(mine2, stl2);
+	show(mine, stl);
+
+	mine.insert(mine.begin(), mine2.begin(), mine2.end());
+	stl.insert(stl.begin(), stl2.begin(), stl2.end());
+	show(mine, stl);
+
+	mine.insert(mine.begin() + 1, mine2.begin(), mine2.begin() + 5);
+	stl.insert(stl.begin() + 1, stl2.begin(), stl2.begin() + 5);
+	show(mine, stl);
+
+	mine.insert(mine.begin() + mine.size(), mine2.begin(), mine2.begin() + 5);
+	stl.insert(stl.begin() + stl.size(), stl2.begin(), stl2.begin() + 5);
+	show(mine, stl);
+
+	std::cout << "--------ERASE :" << std::endl;
+	std::cout << "erase the insert changes" << std::endl;
+	show(mine, stl);
+
+	for (int n = 0; n < 5; n++)
+	{
+		mine_it1 = mine.erase(mine.begin());
+		stl_it1 = stl.erase(stl.begin());
+	}
+	show(mine, stl);
+	std::cout << "Return iterator = " << *mine_it1 << std::endl;
+	std::cout << "Return iterator = " << *stl_it1 << std::endl;
+
+	mine_it1 = mine.erase(mine.begin(), mine.begin() + 10);
+	stl_it1 = stl.erase(stl.begin(), stl.begin() + 10);
+	show(mine, stl);
+	std::cout << "Return iterator = " << *mine_it1 << std::endl;
+	std::cout << "Return iterator = " << *stl_it1 << std::endl;
+
+	mine_it1 = mine.erase(mine.begin() + 10, mine.begin() + 15);
+	stl_it1 = stl.erase(stl.begin() + 10, stl.begin() + 15);
+	show(mine, stl);
+	std::cout << "Return iterator = " << *(mine_it1 - 1) << std::endl;
+	std::cout << "Return iterator = " << *(stl_it1 - 1) << std::endl;
+
+	std::cout << "--------SWAP_EMPTY :" << std::endl;
+	show(empty, stl_empty);
+	show(mine, stl);
+
+	mine.swap(empty);
+	stl.swap(stl_empty);
+	show(empty, stl_empty);
+	show(mine, stl);
+
 	return 0;
 }

@@ -197,26 +197,31 @@ namespace ft
 
 	template <class InputIterator>
 		void assign (InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type*  = nullptr) {
-			size_type n = last - first;
+			size_type n = 0;
+			InputIterator tmp = first;
+			while (tmp++ != last)
+				n++;
 			if (n > _cap)
 				realloc(n);
 			pointer ptr = &_arr[0];
-			for (size_type n = 0; n < _size && first != last; n++, ptr++, first++)
+			size_type j = 0;
+			for (; j < _size && first != last; j++, ptr++, first++)
 			{
 				_alloc.destroy(ptr);
-				_alloc.construct(ptr, first);
+				_alloc.construct(ptr, *first);
 			}
-			if (n == _size)
+			if (j == _size)
 			{
-				for (; first != last; ptr++, first++)
-					_alloc.construct(ptr, first);
+				for (; first != last; ptr++, first++, j++)
+					_alloc.construct(ptr, *first);
+				_size = j;
 			}
 			else
 			{
-				for (; n < _size; n++, ptr++)
+				for (; j < _size; j++, ptr++)
 					_alloc.destroy(ptr);
+				_size = j;
 			}
-			_size = n;
 		  }
 
 		void assign (size_type n, const value_type& val) {
@@ -233,11 +238,13 @@ namespace ft
 			{
 				for (; j < n; j++, ptr++)
 					_alloc.construct(ptr, val);
+				_size = j;
 			}
 			else
 			{
 				for (; j < n; j++, ptr++)
 					_alloc.destroy(ptr);
+				_size = j;
 			}
 		}
 
@@ -256,91 +263,74 @@ namespace ft
 	iterator insert(iterator position, const value_type& val) {
 			if (_size == _cap)
 				realloc(_cap + 1);
-			reverse_iterator it = end();
-			pointer swap;
-			for (; it != position; it++)
+			pointer ptr = &_arr[_size];
+			iterator it = end();
+			value_type swap;
+			for (; it != position; it--, ptr--)
 			{
-				swap = *it;
-				*it = *(it + 1);
-				*(it + 1) = swap;
+				swap = *ptr;
+				*ptr = *(ptr - 1);
+				*(ptr - 1) = swap;
 			}
-			*position = val;
+			*ptr = val;
 			_size++;
+			return position;
 		}
 
 		void insert (iterator position, size_type n, const value_type& val) {
 			if (_size + n >= _cap)
 				realloc(_size + n + 1);
-			reverse_iterator it = rbegin() + n;
-			iterator		 rstart = position + n;
-			pointer swap;
-			for (; it != rstart; it++)
-			{
-				swap = *it;
-				*it = *(it + n);
-				*(it + n) = swap;
-			}
+			pointer		ptr = &_arr[_size + n - 1];
+			iterator	it = end() + n - 1;
+			iterator	rstart = position + n - 1;
+			for (; it != rstart; it--, ptr--)
+				*ptr = *(ptr - n);
+			while(it-- != position)
+				ptr--;
 			for (size_type j = 0; j < n; j++)
-				*position++ = val;
+				*ptr++ = val;
 			_size += n;
 		}
 
 	template <class InputIterator>
 		void insert (iterator position, InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type*  = nullptr) {
-			size_type			n = first - last;
-			reverse_iterator	it = rbegin() + n;
-			iterator			rstart = position + n;
-			pointer swap;
-			for (; it != rstart; it++)
-			{
-				swap = *it;
-				*it = *(it + n);
-				*(it + n) = swap;
-			}
+			size_type		n = 0;
+			InputIterator	tmp = first;
+			while (tmp++ != last)
+				n++;
+			if (_size + n >= _cap)
+				realloc(_size + n + 1);
+			pointer		ptr = &_arr[_size + n - 1];
+			iterator	it = end() + n - 1;
+			iterator	rstart = position + n - 1;
+			for (; it != rstart; it--, ptr--)
+				*ptr = *(ptr - n);
+			while(it-- != position)
+				ptr--;
 			for (size_type j = 0; j < n; j++)
-				*position++ = *first++;
+				*ptr++ = *first++;
 			_size += n;
 		}
 
 		iterator erase(iterator position) {
-			iterator tmp = position;
+			iterator tmp = begin();
 			pointer ptr = &_arr[0];
 			size_type pos = 0;
-			while (position-- != tmp && ptr++)
-				pos++;
+			while (tmp++ != position)
+				ptr++;
 			_alloc.destroy(ptr);
-			for (; pos < _size - 1; pos++)
-			{
-				ptr = ptr + 1;
-				_alloc.destroy(ptr + 1);
-			}
-			ptr = nullptr;
 			_size--;
-			return tmp;
+			for (; pos < _size; ptr++, pos++)
+				*ptr = *(ptr + 1);
+			ptr = nullptr;
+			return position;
 		}	
 
 		iterator erase(iterator first, iterator last) {
-			iterator it = begin();
-			iterator tmp = first;
-			iterator tmp2 = last;
-			pointer  ptr1 = &_arr[0];
-			pointer  ptr2 = &_arr[0];
-			size_type ptr1_pos = 0;
-			size_type ptr2_pos = 0;
-			while (it++ != tmp && ptr1++)
-				ptr1_pos++;
-			it = begin();
-			while (it++ != tmp2 && ptr2++)
-				ptr2_pos++;
-			size_type diff = ptr2_pos - ptr1_pos;
-			_alloc.destroy(ptr1);
-			while (diff--)
-			{
-				ptr1 = ptr1 + 1;
-				_alloc.destroy(tmp + 1);
-				_size--;
-			}
-			return first;
+			size_type n = first - last;
+			while (n-- > 0)
+				erase(first);
+			return (first - (first - last));
 		}
 
 		void	swap(vector &x) {
@@ -351,10 +341,10 @@ namespace ft
 
 			_arr = x._arr;
 			_alloc = x._alloc;
-			_size = x.size;
-			_cap = x.cap;
+			_size = x._size;
+			_cap = x._cap;
 
-			x.arr = swap1;
+			x._arr = swap1;
 			x._alloc = swap2;
 			x._size = swap3;
 			x._cap = swap4;
