@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <vector>
 #include "vector.hpp"
+#include <chrono>
+#include <unistd.h>
 
 typedef ft::vector<int, std::allocator<int> > ft_vec;
 typedef std::vector<int, std::allocator<int> > st_vec;
@@ -51,23 +53,53 @@ void show1(ft_vec mine2, st_vec stl2) {
 	std::cout << *it3 << "}" << std::endl;
 }
 
+void show2(ft_vec vec1, ft_vec vec2)
+{
+	ft::vector<int>::iterator it1 = vec1.begin();
+	ft::vector<int>::iterator it2 = vec1.end();
+	ft::vector<int>::iterator it3 = vec2.begin();
+	ft::vector<int>::iterator it4 = vec2.end();
+	it2--;
+	it4--;
+	std::cout << "mine_2(" << vec1.size() << " / " << vec1.capacity() << "): {";
+	for (; it1 != it2; it1++)
+		std::cout << *it1 << ", ";
+	std::cout << *it1 << "}" << std::endl;
+	std::cout << "stl2(" << vec2.size() << " / " << vec2.capacity() << "):  {";
+	for (; it3 != it4; it3++)
+		std::cout << *it3 << ", ";
+	std::cout << *it3 << "}" << std::endl;
+}
+
 int main()
 {	
+	using namespace std::chrono;
 	std::allocator<int> alloc;
 	ft_vec   mine(5, 10);
 	ft_vec   mine2(5, 42);
 	ft_vec   empty(0);
+
 	st_vec  stl(5, 10);
 	st_vec  stl2(5, 6);
 	st_vec	stl_empty(0);
+
 	ft::vector<int>::iterator				mine_it1 = mine.begin();
 	ft::vector<int>::iterator				mine_it2 = mine.end();
 	ft::vector<int>::reverse_iterator		mine_Rit1 = mine.rbegin();
 	ft::vector<int>::reverse_iterator		mine_Rit2 = mine.rend();
+
 	std::vector<int>::iterator				stl_it1 = stl.begin();
 	std::vector<int>::iterator				stl_it2 = stl.end();
 	std::vector<int>::reverse_iterator		stl_Rit1 = stl.rbegin();
 	std::vector<int>::reverse_iterator		stl_Rit2 = stl.rend();
+
+	high_resolution_clock				clock;
+	high_resolution_clock::time_point	t1;
+	high_resolution_clock::time_point	t2;
+	milliseconds::rep time_span1;
+	milliseconds::rep time_span2;
+
+	
 
 	std::cout << "\n==========ITERATORS===========" << std::endl;
 	show(mine, stl);
@@ -90,6 +122,7 @@ int main()
 	show(mine, stl);
 
 	std::cout << "--------RESIZE_UP :" << std::endl;
+
 	mine.resize(10, 5);
 	stl.resize(10, 5);
 	std::cout << "mine_max_size: " << mine.max_size() << std::endl;
@@ -285,6 +318,85 @@ int main()
 	stl.swap(stl_empty);
 	show(empty, stl_empty);
 	show(mine, stl);
+
+	std::cout << "--------SWAP_NOT_EMPTY :" << std::endl;
+	show(mine, stl);
+	show1(mine2, stl2);
+	std::cout << std::endl;
+
+	mine.swap(mine2);
+	stl.swap(stl2);
+	show(mine, stl);
+
+	std::cout << "--------CLEAR :" << std::endl;
+	std::cout << "clear twice" << std::endl;
+	show(mine, stl);
+
+	mine.clear();
+	stl.clear();
+	show(mine, stl);
+
+	mine.clear();
+	stl.clear();
+	show(mine, stl);
+
+	std::cout << "\n==========RELATIONAL OPERATORS===========" << std::endl;
+	mine.assign(10, 0);
+	mine2.assign(10, 1);
+	show2(mine, mine2);
+
+	std::cout << "mine == mine2 --> ";
+	if (mine == mine2)
+ 		std::cout << "true" << std::endl;
+	else
+		std::cout << "false" << std::endl;
+
+	std::cout << "mine != mine2 --> ";
+	if (mine != mine2)
+ 		std::cout << "true" << std::endl;
+	else
+		std::cout << "false" << std::endl;
+
+	std::cout << "mine < mine2 --> ";
+	if (mine < mine2)
+ 		std::cout << "true" << std::endl;
+	else
+		std::cout << "false" << std::endl;
+
+	std::cout << "mine > mine2 --> ";
+	if (mine > mine2)
+ 		std::cout << "true" << std::endl;
+	else
+		std::cout << "false" << std::endl;
+
+		std::cout << "mine <= mine2 --> ";
+	if (mine <= mine2)
+ 		std::cout << "true" << std::endl;
+	else
+		std::cout << "false" << std::endl;
+
+	std::cout << "mine >= mine2 --> ";
+	if (mine >= mine2)
+ 		std::cout << "true" << std::endl;
+	else
+		std::cout << "false" << std::endl;
+
+	std::cout << "==========TIMERS===" << std::endl;
+	std::cout << "check out a few operation heavy functions for times" << std::endl;
+
+	ft_vec	my_big(10000, 5);
+	st_vec	stl_big(10000, 5);
+
+	t1 = clock.now();
+	my_big.insert(my_big.begin() + 5000, 10);
+	t2 = clock.now();
+	time_span1 = duration_cast<microseconds>(t2 - t1).count();
+	t1 = clock.now();
+	stl_big.insert(stl_big.begin(), 10);
+	t2 = clock.now();
+	time_span2 = duration_cast<microseconds>(t2 - t1).count();
+	std::cout << "my_time:" << time_span1 << "ms\n";
+	std::cout << "stl_time:" << time_span2 << "ms\n";
 
 	return 0;
 }
