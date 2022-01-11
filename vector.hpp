@@ -46,8 +46,26 @@ namespace ft
 			size_type tmp_cap = _cap;
 			while (tmp_cap < n)
 				tmp_cap *= 2;
+			std::cout << "TMPCAP = " << tmp_cap << std::endl << "SIZE = " << _size << std::endl;
 			pointer buff = _alloc.allocate(tmp_cap);
-			pointer ptr1 = &_arr[0];
+			pointer ptr1 = _arr;
+			pointer ptr2 = buff;
+			for (size_type j = 0; j < _size; j++, ptr1++, ptr2++)
+			{
+				_alloc.construct(ptr2, *ptr1);
+				_alloc.destroy(ptr1);
+			}
+			_alloc.deallocate(_arr, _cap);
+			_cap = tmp_cap;
+			_arr = buff;
+		}
+
+		void	realloc_from(size_type n, size_type from) {
+			size_type tmp_cap = _cap;
+			while (tmp_cap < n)
+				tmp_cap *= 2;
+			pointer buff = _alloc.allocate(tmp_cap);
+			pointer ptr1 = &_arr[from];
 			pointer ptr2 = &buff[0];
 			for (size_type n = 0; n < _size; n++, ptr1++, ptr2++)
 			{
@@ -69,10 +87,16 @@ namespace ft
 
 		explicit vector(size_type n, const value_type &val = value_type(),
 						const allocator_type &alloc = allocator_type()): _alloc(alloc), _size(n), _cap(1) {
+			if (!_size)
+			{
+				_arr = _alloc.allocate(1);
+				_arr[0] = 0;
+				return;
+			}
 			while (_cap < n)
 				_cap *= 2;
 			_arr = _alloc.allocate(_cap);
-			pointer		tmp = &_arr[0];
+			pointer	tmp = &_arr[0];
 			for (size_type j = 0; j < _size; j++, tmp++)
 				_alloc.construct(tmp, val);
 		}
@@ -130,6 +154,7 @@ namespace ft
 			for (size_type n = 0; n < x._size ; n++, tmp++, tmp3++)
 				_alloc.construct(tmp, *tmp3);
 			_size = x._size;
+			_cap = x._cap;
 			return *this;
 		}		
 
@@ -211,7 +236,7 @@ namespace ft
 				_alloc.construct(ptr, *first);
 			}
 			if (j == _size)
-			{
+			{0
 				for (; first != last; ptr++, first++, j++)
 					_alloc.construct(ptr, *first);
 				_size = j;
@@ -236,6 +261,7 @@ namespace ft
 			}
 			if (j == _size)
 			{
+				std::cout << *ptr << std::endl;
 				for (; j < n; j++, ptr++)
 					_alloc.construct(ptr, val);
 				_size = j;
@@ -313,41 +339,43 @@ namespace ft
 		}
 
 		iterator erase(iterator position) {
-			iterator tmp = begin();
-			pointer ptr = &_arr[0];
-			size_type pos = 0;
-			while (tmp++ != position)
-				ptr++;
+			pointer ptr = &_arr[position - begin()];
+
 			_alloc.destroy(ptr);
 			_size--;
-			for (; pos < _size; ptr++, pos++)
+			for (size_type pos = position - begin(); pos < _size; pos++, ptr++)
 				*ptr = *(ptr + 1);
-			ptr = nullptr;
 			return position;
-		}	
+		}
 
 		iterator erase(iterator first, iterator last) {
-			size_type n = first - last;
-			while (n-- > 0)
-				erase(first);
-			return (first - (first - last));
+			pointer 	ptr  = &_arr[first - begin()];
+			size_type	diff = last - first;
+			for (size_type n = 0; n < _size; n++, ptr++)
+			{
+				if (n < diff)
+					_alloc.destroy(ptr);
+				*ptr = *(ptr + diff);
+			}
+			_size -= diff;
+			return first;
 		}
 
 		void	swap(vector &x) {
-			pointer swap1 = _arr;
-			allocator_type swap2 = _alloc;
-			size_type swap3 = _size;
-			size_type swap4 = _cap;
+			pointer 		swap1 = _arr;
+			allocator_type	swap2 = _alloc;
+			size_type		swap3 = _size;
+			size_type		swap4 = _cap;
 
-			_arr = x._arr;
-			_alloc = x._alloc;
-			_size = x._size;
-			_cap = x._cap;
+			_arr	= x._arr;
+			_alloc 	= x._alloc;
+			_size	= x._size;
+			_cap	= x._cap;
 
-			x._arr = swap1;
+			x._arr	 = swap1;
 			x._alloc = swap2;
-			x._size = swap3;
-			x._cap = swap4;
+			x._size	 = swap3;
+			x._cap	 = swap4;
 		}
 
 		void clear() {

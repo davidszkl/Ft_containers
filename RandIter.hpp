@@ -23,14 +23,21 @@ public:
     typedef T*				pointer;
     typedef T&				ref;
 
+	pointer getPtr() {return _ptr;}
+
+private:
+
+	pointer		_ptr;
+
+public:
 // CONSTRUCTORS, DESTRUCTORS ===================================================
 
 	RandIter(){
-		ptr = nullptr;
+		_ptr = nullptr;
 	}
 
 	RandIter(T *ptr1){
-		ptr = ptr1;
+		_ptr = ptr1;
 	}
 
 	RandIter(const RandIter &src){
@@ -41,22 +48,22 @@ public:
 
 	RandIter<T> &operator=(const RandIter&rhs)
 	{
-		this->ptr = rhs.ptr;
+		this->_ptr = rhs._ptr;
 		return *this;
 	}
 
 //OPERATOR OVERLOADS ==========================================================
 
-	ref 		operator*(void)		const	{return *ptr;}
-    pointer 	operator->(void)	const	{return ptr;}
+	ref 		operator*(void)		const	{return *_ptr;}
+    pointer 	operator->(void)	const	{return _ptr;}
 
     RandIter<T> &operator++(){
-		ptr++;
+		_ptr++;
 		return *this;
 	}
 
     RandIter<T> &operator--(){
-		ptr--;
+		_ptr--;
 		return *this;
 	}
 
@@ -75,45 +82,43 @@ public:
 	}
 
     RandIter<T>	&operator+=(const difference_type &offset){
-		ptr += offset;
+		_ptr += offset;
 		return *this;
 	}
 
     RandIter<T> &operator-=(const difference_type &offset){
-		ptr -= offset;
+		_ptr -= offset;
 		return *this;
 	}
 
     RandIter<T>	operator+(difference_type offset) 	const{
 		RandIter<T> tmp(*this);
-		tmp.ptr += offset;
+		tmp._ptr += offset;
 		return tmp;
 	}
 
     RandIter<T> operator-(difference_type offset)	const{
 		RandIter<T> tmp(*this);
-		tmp.ptr -= offset;
+		tmp._ptr -= offset;
 		return tmp;
 	}
 
-	difference_type	operator-(RandIter<T> const& rhs)	const{
-		difference_type diff = 0;
-		RandIter<T> tmp(*this);
-		while (tmp++ != rhs)
-			diff++;
-		return diff;
+	difference_type	operator-(RandIter<T> const& rhs)	const {
+		uintptr_t tmp1 = reinterpret_cast<uintptr_t>(this->_ptr);
+		uintptr_t rhs1 = reinterpret_cast<uintptr_t>(rhs._ptr);
+		difference_type diff = ((tmp1 - rhs1) / sizeof(T));
+		return diff ;
 	}
 
 	T&	operator[](difference_type offset)	const{
-		return ptr[offset];
+		return _ptr[offset];
 	}
 
-	bool operator<(const RandIter<T> &rhs) 	{return ptr < rhs.ptr;}
-	bool operator<=(const RandIter<T> &rhs)	{return ptr <= rhs.ptr;}
-	bool operator>(const RandIter<T> &rhs)	{return ptr > rhs.ptr;}
-	bool operator>=(const RandIter<T> &rhs)	{return ptr >= rhs.ptr;}
-	bool operator==(const RandIter<T> &rhs)	{return ptr == rhs.ptr;}
-	bool operator!=(const RandIter<T> &rhs)	{return ptr != rhs.ptr;}
-	pointer ptr;
+	bool operator<(const RandIter<T> &rhs) 	{return _ptr < rhs._ptr;}
+	bool operator<=(const RandIter<T> &rhs)	{return _ptr <= rhs._ptr;}
+	bool operator>(const RandIter<T> &rhs)	{return _ptr > rhs._ptr;}
+	bool operator>=(const RandIter<T> &rhs)	{return _ptr >= rhs._ptr;}
+	bool operator==(const RandIter<T> &rhs)	{return _ptr == rhs._ptr;}
+	bool operator!=(const RandIter<T> &rhs)	{return _ptr != rhs._ptr;}
 };
 #endif
