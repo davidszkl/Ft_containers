@@ -46,18 +46,16 @@ namespace ft
 			size_type tmp_cap = _cap;
 			while (tmp_cap < n)
 				tmp_cap *= 2;
-			std::cout << "TMPCAP = " << tmp_cap << std::endl << "SIZE = " << _size << std::endl;
 			pointer buff = _alloc.allocate(tmp_cap);
 			pointer ptr1 = _arr;
-			pointer ptr2 = buff;
-			for (size_type j = 0; j < _size; j++, ptr1++, ptr2++)
+			for (size_type j = 0; j < _size; j++, ptr1++, buff++)
 			{
-				_alloc.construct(ptr2, *ptr1);
-				_alloc.destroy(ptr1);
+				_alloc.construct(buff, *ptr1);
+				_alloc.destroy(ptr1);				
 			}
 			_alloc.deallocate(_arr, _cap);
 			_cap = tmp_cap;
-			_arr = buff;
+			_arr = (buff - _size);
 		}
 
 		void	realloc_from(size_type n, size_type from) {
@@ -87,27 +85,30 @@ namespace ft
 
 		explicit vector(size_type n, const value_type &val = value_type(),
 						const allocator_type &alloc = allocator_type()): _alloc(alloc), _size(n), _cap(1) {
-			if (!_size)
+			if (!n)
 			{
 				_arr = _alloc.allocate(1);
 				_arr[0] = 0;
-				return;
 			}
-			while (_cap < n)
-				_cap *= 2;
-			_arr = _alloc.allocate(_cap);
-			pointer	tmp = &_arr[0];
-			for (size_type j = 0; j < _size; j++, tmp++)
-				_alloc.construct(tmp, val);
+			else
+			{
+				while (_cap < n)
+					_cap *= 2;
+				_arr = _alloc.allocate(_cap);
+				pointer	tmp = &_arr[0];
+				for (size_type j = 0; j < _size; j++, tmp++)
+					_alloc.construct(tmp, val);
+			}
 		}
 
 	template <class InputIterator>
 		vector (InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type(), typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type*  = nullptr):
 			_alloc(alloc),
-			_size(1),
+			_size(0),
 			_cap(1)
 		{
-			_arr = _alloc.allocate(_cap);
+			if (first > last)
+				return ;
 			InputIterator tmp = first;
 			while (tmp != last)
 			{
@@ -116,11 +117,11 @@ namespace ft
 			}
 			while (_cap < _size)
 				_cap *= 2;
-			_arr = _alloc.allocate(_cap, 0);
+			_arr = _alloc.allocate(_cap);
 			pointer ptr = &_arr[0];
 			tmp = first;
 			for (size_type n = 0; n < _size; n++, ptr++, tmp++)
-				_alloc.construct(ptr, tmp);
+				_alloc.construct(ptr, *tmp);
 		}
 
 		vector (const vector &x) {
@@ -222,55 +223,65 @@ namespace ft
 
 	template <class InputIterator>
 		void assign (InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type*  = nullptr) {
-			size_type n = 0;
-			InputIterator tmp = first;
-			while (tmp++ != last)
-				n++;
+			if (first >  last)
+			{
+				std::cout <<  "mis-matched iterators\n";
+				return ;
+			}
+			size_type n = last - first;
 			if (n > _cap)
 				realloc(n);
 			pointer ptr = &_arr[0];
 			size_type j = 0;
-			for (; j < _size && first != last; j++, ptr++, first++)
+
+			if (_size < n)
 			{
-				_alloc.destroy(ptr);
-				_alloc.construct(ptr, *first);
-			}
-			if (j == _size)
-			{0
-				for (; first != last; ptr++, first++, j++)
-					_alloc.construct(ptr, *first);
-				_size = j;
+				while (j < n)
+				{
+					if (j++ < _size)
+						_alloc.destroy(ptr);
+					_alloc.construct(ptr++, *first++);
+				}
+				_size = n;
 			}
 			else
 			{
-				for (; j < _size; j++, ptr++)
+				while (j < _size)
+				{
 					_alloc.destroy(ptr);
-				_size = j;
+					if (j++ < n)
+						_alloc.construct(ptr++, *first++);
+				}
+				_size = n;
 			}
-		  }
+		}
+
 
 		void assign (size_type n, const value_type& val) {
 			if (n > _cap)
 				realloc(n);
 			pointer ptr = &_arr[0];
 			size_type j = 0;
-			for (; j < _size && j < n; j++, ptr++)
+
+			if (_size < n)
 			{
-				_alloc.destroy(ptr);
-				_alloc.construct(ptr, val);
-			}
-			if (j == _size)
-			{
-				std::cout << *ptr << std::endl;
-				for (; j < n; j++, ptr++)
-					_alloc.construct(ptr, val);
-				_size = j;
+				while (j < n)
+				{
+					if (j++ < _size)
+						_alloc.destroy(ptr);
+					_alloc.construct(ptr++, val);
+				}
+				_size = n;
 			}
 			else
 			{
-				for (; j < n; j++, ptr++)
+				while (j < _size)
+				{
 					_alloc.destroy(ptr);
-				_size = j;
+					if (j++ < n)
+						_alloc.construct(ptr++, val);
+				}
+				_size = n;
 			}
 		}
 
@@ -287,76 +298,74 @@ namespace ft
 		}
 
 	iterator insert(iterator position, const value_type& val) {
-			if (_size == _cap)
+			if (_size >= _cap)
 				realloc(_cap + 1);
 			pointer ptr = &_arr[_size];
-			iterator it = end();
-			value_type swap;
-			for (; it != position; it--, ptr--)
-			{
-				swap = *ptr;
-				*ptr = *(ptr - 1);
-				*(ptr - 1) = swap;
-			}
-			*ptr = val;
+			size_type count = end() - position;
 			_size++;
+			for (; count > 0; count--, ptr--)
+				*ptr = *(ptr - 1);
+			*ptr = val;
 			return position;
 		}
 
 		void insert (iterator position, size_type n, const value_type& val) {
-			if (_size + n >= _cap)
-				realloc(_size + n + 1);
-			pointer		ptr = &_arr[_size + n - 1];
-			iterator	it = end() + n - 1;
-			iterator	rstart = position + n - 1;
-			for (; it != rstart; it--, ptr--)
-				*ptr = *(ptr - n);
-			while(it-- != position)
-				ptr--;
-			for (size_type j = 0; j < n; j++)
-				*ptr++ = val;
+			if ((_size + n) >= _cap)
+				realloc(_cap + n);
+			pointer ptr = &_arr[_size + n - 1];
+			size_type count = end() - position;
 			_size += n;
+			for (; count > 0; count--, ptr--)
+				*ptr = *(ptr - n);
+			while (n--)
+				*(ptr--) = val;
 		}
 
 	template <class InputIterator>
 		void insert (iterator position, InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type*  = nullptr) {
-			size_type		n = 0;
-			InputIterator	tmp = first;
-			while (tmp++ != last)
-				n++;
-			if (_size + n >= _cap)
-				realloc(_size + n + 1);
-			pointer		ptr = &_arr[_size + n - 1];
-			iterator	it = end() + n - 1;
-			iterator	rstart = position + n - 1;
-			for (; it != rstart; it--, ptr--)
-				*ptr = *(ptr - n);
-			while(it-- != position)
-				ptr--;
-			for (size_type j = 0; j < n; j++)
-				*ptr++ = *first++;
+			if (first >  last)
+			{
+				std::cout <<  "mis-matched iterators\n";
+				return ;
+			}
+			size_type n = (last - first);
+			if ((_size + n) >= _cap)
+				realloc(_cap + n);
+			pointer ptr = &_arr[_size + n - 1];
+			size_type count = end() - position;
 			_size += n;
+			for (; count > 0; count--, ptr--)
+				*ptr = *(ptr - n);
+			while (n--)
+				*(ptr--) = *(--last);
 		}
 
 		iterator erase(iterator position) {
-			pointer ptr = &_arr[position - begin()];
+			size_type	pos = position - begin();
+			pointer		ptr = &_arr[pos];
 
 			_alloc.destroy(ptr);
 			_size--;
-			for (size_type pos = position - begin(); pos < _size; pos++, ptr++)
+			while (pos++ < _size)
+			{
 				*ptr = *(ptr + 1);
+				ptr++;
+			}
 			return position;
 		}
 
 		iterator erase(iterator first, iterator last) {
-			pointer 	ptr  = &_arr[first - begin()];
+			size_type	n	 = first - begin();
+			pointer 	ptr  = &_arr[n];
 			size_type	diff = last - first;
-			for (size_type n = 0; n < _size; n++, ptr++)
+
+			for (size_type j = 0; n + diff < _size ; j++, n++, ptr++)
 			{
-				if (n < diff)
+				if (j < diff)
 					_alloc.destroy(ptr);
-				*ptr = *(ptr + diff);
-			}
+				if (n + diff < _size)
+					*ptr = *(ptr + diff);
+			}			
 			_size -= diff;
 			return first;
 		}

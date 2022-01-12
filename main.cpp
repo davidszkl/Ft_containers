@@ -36,21 +36,32 @@ void show(ft_vec mine, st_vec stl) {
 	}
 }
 
-void show1(ft_vec mine2, st_vec stl2) {
-	ft::vector<int>::iterator it1 = mine2.begin();
-	ft::vector<int>::iterator it2 = mine2.end();
-	std::vector<int>::iterator it3 = stl2.begin();
-	std::vector<int>::iterator it4 = stl2.end();
+void show1(ft_vec mine, st_vec stl) {
+	ft::vector<int>::iterator it1 = mine.begin();
+	ft::vector<int>::iterator it2 = mine.end();
+	std::vector<int>::iterator it3 = stl.begin();
+	std::vector<int>::iterator it4 = stl.end();
+	
 	it2--;
 	it4--;
-	std::cout << "mine_2(" << mine2.size() << " / " << mine2.capacity() << "): {";
-	for (; it1 != it2; it1++)
-		std::cout << *it1 << ", ";
-	std::cout << *it1 << "}" << std::endl;
-	std::cout << "stl2(" << stl2.size() << " / " << stl2.capacity() << "):  {";
-	for (; it3 != it4; it3++)
-		std::cout << *it3 << ", ";
-	std::cout << *it3 << "}" << std::endl;
+	std::cout << "mine2(" << mine.size() << " / " << mine.capacity() << "): {";
+	if (!mine.size())
+		std::cout << "}\n";
+	else
+	{
+		for (; it1 != it2; it1++)
+			std::cout << *it1 << ", ";
+		std::cout << *it1 << "}" << std::endl;
+	}
+	std::cout << "stl(" << stl.size() << " / " << stl.capacity() << "):  {";
+	if (!stl.size())
+		std::cout << "}\n";
+	else
+	{
+		for (; it3 != it4; it3++)
+			std::cout << *it3 << ", ";
+		std::cout << *it3 << "}" << std::endl << std::endl;
+	}
 }
 
 void show2(ft_vec vec1, ft_vec vec2)
@@ -84,35 +95,31 @@ int main()
 	st_vec	stl_empty(0);
 
 	ft::vector<int>::iterator				mine_it1 = mine.begin();
-	//ft::vector<int>::iterator				mine_it2 = mine.end();
 	ft::vector<int>::reverse_iterator		mine_Rit1 = mine.rbegin();
+	//ft::vector<int>::iterator				mine_it2 = mine.end();
 	//ft::vector<int>::reverse_iterator		mine_Rit2 = mine.rend();
 
 	std::vector<int>::iterator				stl_it1 = stl.begin();
-	//std::vector<int>::iterator				stl_it2 = stl.end();
-	std::vector<int>::reverse_iterator		stl_Rit1 = stl.rbegin();
-	//std::vector<int>::reverse_iterator		stl_Rit2 = stl.rend();
-
-	high_resolution_clock				clock;
-	high_resolution_clock::time_point	t1;
-	high_resolution_clock::time_point	t2;
-	microseconds::rep time_span1;
-	microseconds::rep time_span2;
+	std::vector<int>::reverse_iterator		stl_Rit1 = stl.rbegin();	
+	//std::vector<int>::iterator			stl_it2 = stl.end();
+	//std::vector<int>::reverse_iterator	stl_Rit2 = stl.rend();
 
 	std::cout << "\n==========ITERATORS===========" << std::endl;
 
 	show(mine, stl);
 	show1(mine2, stl2);
+
 	std::cout << "mine_it1:  " << *mine_it1 << std::endl;
-	//std::cout << "mine_it2:  " << *mine_it2 << std::endl;
 	std::cout << "mine_rit1: " << *mine_Rit1 << std::endl;
-	//std::cout << "mine_rit2: " << *mine_Rit2 << std::endl;
 	std::cout << "stl_it1:   " << *stl_it1 << std::endl;
-	//std::cout << "stl_it2:   " << *stl_it2 << std::endl;
 	std::cout << "stl_rit1:  " << *stl_Rit1 << std::endl;
-	//std::cout << "stl_rit2:  " << *stl_Rit2 << std::endl;
 	std::cout << "empty begin: " << *(empty.begin()) << std::endl;
 	std::cout << "empty end:   " << *(empty.end()) << std::endl;
+	//std::cout << "mine_it2:  " << *mine_it2 << std::endl;
+	//std::cout << "mine_rit2: " << *mine_Rit2 << std::endl;
+	//std::cout << "stl_it2:   " << *stl_it2 << std::endl;
+	//std::cout << "stl_rit2:  " << *stl_Rit2 << std::endl;
+
 
 	show(mine, stl);
 	std::cout << "==========CAPACITY===========" << std::endl;
@@ -144,7 +151,6 @@ int main()
 	std::cout << stl.empty() << std::endl;
 	show(mine, stl);
 
-	//STL
 	std::cout << "--------RESERVE_MORE :" << std::endl;
 	mine.reserve(50);
 	stl.reserve(50);
@@ -205,6 +211,7 @@ int main()
 	show(mine, stl);
 
 	std::cout << "-------VALUE_ASSIGN(mine2 assigned with 10,15 ; stl assigned with 10,15) :" << std::endl;
+	std::cout << "CAP = " << mine2.capacity() << std::endl;
 	mine2.assign(10, 15);
 	stl2.assign(10, 15);
 	std::cout << mine2.size() << std::endl;
@@ -313,6 +320,13 @@ int main()
 	std::cout << "Return iterator = " << *(mine_it1 - 1) << std::endl;
 	std::cout << "Return iterator = " << *(stl_it1 - 1) << std::endl;
 
+	// std::cout << "erase empty" << std::endl;
+	// std::cout << "size = " << empty.size() << std::endl;
+	// stl_empty.erase(stl_empty.begin());
+	// stl_empty.erase(stl_empty.end());
+	// empty.erase(empty.begin());
+	// empty.erase(empty.end());
+
 	std::cout << "--------SWAP_EMPTY :" << std::endl;
 	show(empty, stl_empty);
 	show(mine, stl);
@@ -389,10 +403,43 @@ int main()
 	std::cout << "==========TIMERS===" << std::endl;
 	std::cout << "check out a few operation heavy functions for times" << std::endl;
 
+	high_resolution_clock				clock;
+	high_resolution_clock::time_point	t1;
+	high_resolution_clock::time_point	t2;
+	microseconds::rep					time_span1;
+	microseconds::rep					time_span2;
+
 	ft_vec	my_big(10000, 5);
 	st_vec	stl_big(10000, 5);
 	std::cout << "my_size: " << my_big.size() << std::endl;
-	std::cout << "my_size: " << stl_big.capacity() << std::endl;
+	std::cout << "my_size: " << stl_big.capacity() << std::endl << std::endl;
+
+	std::cout << "assign 10000 50s" << std::endl;
+	t1 = clock.now();
+	my_big.assign(10000, 50);
+	t2 = clock.now();
+	time_span1 = duration_cast<microseconds>(t2 - t1).count();
+	t1 = clock.now();
+	stl_big.assign(10000, 50);
+	t2 = clock.now();
+	time_span2 = duration_cast<microseconds>(t2 - t1).count();
+	std::cout << "my_time:" << time_span1 << "ms\n";
+	std::cout << "stl_time:" << time_span2 << "ms\n" << std::endl;
+
+	std::cout << "range_assign 5000" << std::endl;
+	ft_vec clone1(5000, 0);
+	st_vec clone2(5000, 0);
+
+	t1 = clock.now();
+	my_big.assign(clone1.begin(), clone1.end());
+	t2 = clock.now();
+	time_span1 = duration_cast<microseconds>(t2 - t1).count();
+	t1 = clock.now();
+	stl_big.assign(clone2.begin(), clone2.end());
+	t2 = clock.now();
+	time_span2 = duration_cast<microseconds>(t2 - t1).count();
+	std::cout << "my_time:" << time_span1 << "ms\n";
+	std::cout << "stl_time:" << time_span2 << "ms\n" << std::endl;
 
 	std::cout << "insert at 5000" << std::endl;
 	t1 = clock.now();
@@ -400,13 +447,25 @@ int main()
 	t2 = clock.now();
 	time_span1 = duration_cast<microseconds>(t2 - t1).count();
 	t1 = clock.now();
-	stl_big.insert(stl_big.begin(), 10);
+	stl_big.insert(stl_big.begin() + 5000, 10);
 	t2 = clock.now();
 	time_span2 = duration_cast<microseconds>(t2 - t1).count();
 	std::cout << "my_time:" << time_span1 << "ms\n";
 	std::cout << "stl_time:" << time_span2 << "ms\n" << std::endl;
 
-	std::cout << "erase 1 at 1, 5000, end" << std::endl;
+	std::cout << "insert 5000 at 5000" << std::endl;
+	t1 = clock.now();
+	my_big.insert(my_big.begin() + 5000, 5000, 10);
+	t2 = clock.now();
+	time_span1 = duration_cast<microseconds>(t2 - t1).count();
+	t1 = clock.now();
+	stl_big.insert(stl_big.begin() + 5000, 5000, 10);
+	t2 = clock.now();
+	time_span2 = duration_cast<microseconds>(t2 - t1).count();
+	std::cout << "my_time:" << time_span1 << "ms\n";
+	std::cout << "stl_time:" << time_span2 << "ms\n" << std::endl;
+
+	std::cout << "erase 1 at: 1, 5000, end" << std::endl;
 	t1 = clock.now();
 	my_big.erase(my_big.begin());
 	t2 = clock.now();
@@ -415,7 +474,7 @@ int main()
 	stl_big.erase(stl_big.begin());
 	t2 = clock.now();
 	time_span2 = duration_cast<microseconds>(t2 - t1).count();
-	std::cout << "my_time:" << time_span1 << "ms\n";
+	std::cout << "my_time: " << time_span1 << "ms\n";
 	std::cout << "stl_time:" << time_span2 << "ms\n";
 
 	t1 = clock.now();
@@ -426,7 +485,7 @@ int main()
 	stl_big.erase(stl_big.begin() + 4998);
 	t2 = clock.now();
 	time_span2 = duration_cast<microseconds>(t2 - t1).count();
-	std::cout << "my_time:" << time_span1 << "ms\n";
+	std::cout << "my_time: " << time_span1 << "ms\n";
 	std::cout << "stl_time:" << time_span2 << "ms\n";
 
 	t1 = clock.now();
@@ -437,10 +496,10 @@ int main()
 	stl_big.erase(stl_big.begin() + 9995);
 	t2 = clock.now();
 	time_span2 = duration_cast<microseconds>(t2 - t1).count();
-	std::cout << "my_time:" << time_span1 << "ms\n";
+	std::cout << "my_time: " << time_span1 << "ms\n";
 	std::cout << "stl_time:" << time_span2 << "ms\n";
 
-	std::cout << "\nerase 10 ,100, 1000 at 5000" << std::endl;
+	std::cout << "\nerase 10 ,100, 1000 at: 5000" << std::endl;
 	t1 = clock.now();
 	my_big.erase(my_big.begin() + 5000, my_big.begin() + 5010);
 	t2 = clock.now();
@@ -449,7 +508,7 @@ int main()
 	stl_big.erase(stl_big.begin() + 5000, stl_big.begin() + 5010);
 	t2 = clock.now();
 	time_span2 = duration_cast<microseconds>(t2 - t1).count();
-	std::cout << "my_time:" << time_span1 << "ms\n";
+	std::cout << "my_time: " << time_span1 << "ms\n";
 	std::cout << "stl_time:" << time_span2 << "ms\n";
 
 	t1 = clock.now();
@@ -460,7 +519,7 @@ int main()
 	stl_big.erase(stl_big.begin() + 5000, stl_big.begin() + 5100);
 	t2 = clock.now();
 	time_span2 = duration_cast<microseconds>(t2 - t1).count();
-	std::cout << "my_time:" << time_span1 << "ms\n";
+	std::cout << "my_time: " << time_span1 << "ms\n";
 	std::cout << "stl_time:" << time_span2 << "ms\n";
 
 	t1 = clock.now();
@@ -471,9 +530,8 @@ int main()
 	stl_big.erase(stl_big.begin() + 5000, stl_big.begin() + 6000);
 	t2 = clock.now();
 	time_span2 = duration_cast<microseconds>(t2 - t1).count();
-	std::cout << "my_time:" << time_span1 << "ms\n";
+	std::cout << "my_time: " << time_span1 << "ms\n";
 	std::cout << "stl_time:" << time_span2 << "ms\n";
-
 
 	return 0;
 }
