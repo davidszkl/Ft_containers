@@ -11,8 +11,8 @@ all:	$(HEADER)
 $(NAME): all
 
 clean:
-		$(RM) $(NAME) .DS_Store
-		rm -rf $(NAME).dSYM
+		$(RM) $(NAME) .DS_Store a.out
+		rm -rf $(NAME).dSYM a.out.dSYM
 
 re: clean
 	all
