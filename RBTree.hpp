@@ -80,50 +80,22 @@ public:
 				currentNode = currentNode->Rchild;
 		}
 		if (_comp(val.first, previousNode->data.first))
+		{
 			previousNode->Lchild = new_node(val, previousNode);
+			currentNode = previousNode->Lchild;
+		}
 		else
+		{
 			previousNode->Rchild = new_node(val, previousNode);
+			currentNode = previousNode->Rchild;
+		}
 		if (!previousNode->parent)
 			return;
-		//fix_insert(currentNode);
+		fix_insert(currentNode);
 	}
 }
 
-	void	rotate_right(Node_ptr x) {
-		Node_ptr y = x->Lchild;
-		x->Lchild = y->Rchild;
-		if (y->Rchild)
-			y->Rchild->parent = x;
-		y->parent = x->parent;
-		if (!x->parent)
-			_root = y;
-		else if (x == x->parent->Rchild)
-			x->parent->Rchild = y;
-		else
-			x->parent->Lchild = y;
-		y->Rchild = x;
-		x->parent = y;
-	}
-
-	void	rotate_left(Node_ptr x) {
-		Node_ptr y = x->Rchild;
-		x->Rchild = y->Lchild;
-		if (y->Lchild)
-			y->Lchild->parent = x;
-		y->parent = x->parent;
-		if (!x->parent)
-			_root = y;
-		else if (x == x->parent->Lchild)
-			x->parent->Lchild = y;
-		else
-			x->parent->Rchild = y;
-		y->Lchild = x;
-		x->parent = y;
-	}
-
 	void fix_insert(Node_ptr currentNode) {
-		if (currentNode->parent->color == BLACK)
-			return ;
 		while (currentNode->parent->color == RED)
 		{
 			//std::cout << "FIX" << std::endl;
@@ -155,7 +127,6 @@ public:
 			}
 			else
 			{
-				std::cout << "ici\n";
 				Node_ptr uncle = currentNode->parent->parent->Rchild;
 				if (uncle->color == RED)
 				{
@@ -185,6 +156,138 @@ public:
 		_root->color = BLACK;
 	}
 
+	void	rotate_right(Node_ptr x) {
+		Node_ptr y = x->Lchild;
+		x->Lchild = y->Rchild;
+		if (y->Rchild != _leaf) 
+			y->Rchild->parent = x;
+		y->parent = x->parent;
+		if (!x->parent)
+			_root = y;
+		else if (x == x->parent->Rchild)
+			x->parent->Rchild = y;
+		else
+			x->parent->Lchild = y;
+		y->Rchild = x;
+		x->parent = y;
+	}
+
+	void	rotate_left(Node_ptr x) {
+		Node_ptr y = x->Rchild;
+		x->Rchild = y->Lchild;
+		if (y->Lchild != _leaf)
+			y->Lchild->parent = x;
+		y->parent = x->parent;
+		if (!x->parent)
+			_root = y;
+		else if (x == x->parent->Lchild)
+			x->parent->Lchild = y;
+		else
+			x->parent->Rchild = y;
+		y->Lchild = x;
+		x->parent = y;
+	}
+
+	void	delete_node(Node_ptr x) {
+
+	}
+
+	// Node_ptr Breadth_first_traversal(Node_ptr start, value_type::first key){
+	// 	if (start->data.first = key)
+	// 		return start;
+	// 	if (start != _leaf)
+	// 	{
+	// 		Breadth_first_traversal(start->Lchild);
+	// 		Breadth_first_traversal(start->Lchild);
+	// 	}
+	// }
+
+	Node_ptr search(Node_ptr start, value_type key) {
+		if (start == _leaf || key.first == start->data.first)
+			return start;
+		if (key.first < start->data.first)
+			return search(start->Lchild, key);
+		else return search(start->Rchild, key);
+	}
+
+	Node_ptr min(Node_ptr start) {
+		while (start->Lchild != _leaf)
+			start = start->Lchild;
+		return start;
+	}
+
+	Node_ptr max(Node_ptr start) {
+		while (start->Rchild != _leaf)
+			start = start->Rchild;
+		return start;
+	}
+
+	Node_ptr successor(Node_ptr start) {
+		if (start->Rchild != _leaf)
+			return min(start->Rchild);
+		Node_ptr rval = start->parent;
+		while (rval && start == rval->Rchild)
+		{
+			start = rval;
+			rval = rval->parent;
+		}
+		return rval;
+	}
+
+	Node_ptr predecessor(Node_ptr start) {
+		if (start->Lchild != _leaf)
+			return max(start->Lchild);
+		Node_ptr rval = start->parent;
+		while (rval && start == rval->Lchild)
+		{
+			start = rval;
+			rval = rval->parent;
+		}
+		return rval;
+	}
+
+	void in_order(Node_ptr start) {
+			if (start != _leaf) {
+			in_order(start->Lchild);
+			show_Node(start);
+			in_order(start->Rchild);
+		}
+	}
+
+	void pre_order(Node_ptr start) {
+		if (start != _leaf) {
+			show_Node(start);
+			pre_order(start->Lchild);
+			pre_order(start->Rchild);
+		}
+	}
+
+	void post_order(Node_ptr start) {
+		if (start != _leaf) {		
+			post_order(start->Lchild);
+			post_order(start->Rchild);
+			show_Node(start);
+		}
+	}
+
+	bool level_order(Node_ptr start, int level) {
+		if (start == _leaf) return false;
+		if (level == 1) {
+			std::cout << start->data.first << " ";
+			return true;
+		}
+		bool left = level_order(start->Lchild, level - 1);
+		bool right = level_order(start->Rchild, level - 1);
+
+		return (left || right);
+	}
+
+	void level_order_traversal(Node_ptr start) {
+		int level = 1;
+		while (level_order(start, level))
+			level++;
+	}
+
 	Node_ptr	root() const {return _root;}
 	size_t		size() const {return _size;}
 
@@ -199,11 +302,11 @@ public:
 
 	void show_Node(Node_ptr node) {
 		if (node->parent && node == node->parent->Lchild)
-			std::cout << "LCHILD ";
+			std::cout << "LCHILD [" << node->parent->data.first << "] ";
 		else if (node->parent && node == node->parent->Rchild)
-			std::cout << "RCHILD ";
+			std::cout << "RCHILD [" << node->parent->data.first << "] ";
 		else
-			std::cout << "ROOT ";
+			std::cout << "ROOT   ";
 		std::cout << "[" << node->data.first << "][" << node->data.second << "][";
 		if (node->color == BLACK)
 			std::cout << "BLACK]" << std::endl;
