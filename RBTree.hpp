@@ -60,13 +60,24 @@ public:
 		_leaf->color 	= BLACK;
 	}
 
+	void transplant(Node_ptr A, Node_ptr B) {
+		if (!A->parent)
+			_root = B;
+		else if (A == A->parent->Lchild)
+			A->parent->Lchild = B;
+		else
+			A->parent->Rchild = B;
+		B->parent = A->parent;
+	}
+
 	void insert(value_type val) {
 	if (!_size++) {
 		_root = new_node(val, nullptr);
 		_root->color = BLACK;
 		return ;
 	}
-	else {
+	else
+	{
 		Node_ptr currentNode	= _root;
 		Node_ptr previousNode	= _root;
 		while (currentNode != _leaf)
@@ -98,8 +109,6 @@ public:
 	void fix_insert(Node_ptr currentNode) {
 		while (currentNode->parent->color == RED)
 		{
-			//std::cout << "FIX" << std::endl;
-			//show_Node(currentNode);
 			if (currentNode->parent == currentNode->parent->parent->Rchild)
 			{
 				Node_ptr uncle = currentNode->parent->parent->Lchild;
@@ -188,24 +197,117 @@ public:
 		x->parent = y;
 	}
 
-	void	delete_node(Node_ptr x) {
-
+	void	delete_node(key_type key)
+	{
+		// static int n = 0;
+		// n++;
+		// std::cout << n << "\n";
+		Node_ptr root = _root;
+		Node_ptr tmp = search(root, key);
+		if (tmp == _leaf)
+			return ;
+		Node_ptr A = tmp;
+		COLOR original_color = A->color;
+		Node_ptr B = nullptr;
+		if (tmp->Lchild == _leaf) {
+			B = tmp->Rchild;
+			transplant(tmp, tmp->Rchild);
+		}
+		else if (tmp->Rchild == _leaf) {
+			B = tmp->Lchild;
+			transplant(tmp, tmp->Lchild);
+		}
+		else
+		{
+			A = min(tmp->Rchild);
+			original_color = A->color;
+			B = A->Rchild;
+			if (A->parent == tmp)
+				B->parent = A;
+			else
+			{
+				transplant(A, A->Rchild);
+				A->Rchild = tmp->Rchild;
+				A->Rchild->parent = A;
+			}
+			transplant(tmp, A);
+			A->Lchild = tmp->Lchild;
+			A->Lchild->parent = A;
+			A->color = tmp->color;
+		}
+		_alloc.destroy(tmp);
+		_alloc.deallocate(tmp, 1);
+		_size--;
+		if (original_color == BLACK)
+			fix_delete(B);
 	}
 
-	// Node_ptr Breadth_first_traversal(Node_ptr start, value_type::first key){
-	// 	if (start->data.first = key)
-	// 		return start;
-	// 	if (start != _leaf)
-	// 	{
-	// 		Breadth_first_traversal(start->Lchild);
-	// 		Breadth_first_traversal(start->Lchild);
-	// 	}
-	// }
+	void fix_delete(Node_ptr A) {
+		Node_ptr tmp = nullptr;
+		while (A != _root && A->color == BLACK)
+		{
+			if (A == A->parent->Lchild) {
+				tmp = A->parent->Rchild;
+				if (A->color == RED) {
+					tmp->color = BLACK;
+					A->parent->color = RED;
+					rotate_left(A->parent);
+					tmp = A->parent->Rchild;
+				}
+				if (tmp->Lchild->color == BLACK && tmp->Rchild->color == BLACK) {
+					tmp->color = RED;
+					A = A->parent;
+				}
+				else 
+				{
+					if (tmp->Rchild->color == BLACK) {
+						tmp->Lchild->color = BLACK;
+						tmp->color = RED;
+						rotate_right(tmp);
+						tmp = A->parent->Rchild;
+					}
+					tmp->color = A->parent->color;
+					A->parent->color = BLACK;
+					tmp->Rchild->color = BLACK;
+					rotate_left(A->parent);
+					A = _root;
+				}
+			}
+			else
+			{
+				tmp = A->parent->Lchild;
+				if (tmp->color == RED) {
+					tmp->color = BLACK;
+					A->parent->color = RED;
+					rotate_right(A->parent);
+					tmp = A->parent->Lchild;
+				}
+				if (tmp->Rchild->color == BLACK && tmp->Rchild->color == BLACK) {
+					tmp->color = RED;
+					A = A->parent;
+				}
+				else {
+					if (tmp->Lchild->color == BLACK)  {
+						tmp->Rchild->color = BLACK;
+						tmp->color = RED;
+						rotate_left(tmp);
+						tmp = A->parent->Lchild;
+					}
+					tmp->color = A->parent->color;
+					A->parent->color = BLACK;
+					tmp->Lchild->color = BLACK;
+					rotate_right(A->parent);
+					A = _root;
+				}
+			}
+		}
+		A->color = BLACK;
+	}
 
-	Node_ptr search(Node_ptr start, value_type key) {
-		if (start == _leaf || key.first == start->data.first)
+	Node_ptr search(Node_ptr start, key_type key) {
+		if (start == _leaf || key == start->data.first)
 			return start;
-		if (key.first < start->data.first)
+		if (key < start->data.first)
 			return search(start->Lchild, key);
 		else return search(start->Rchild, key);
 	}
@@ -271,12 +373,9 @@ public:
 	}
 
 	bool level_order(Node_ptr start, int level) {
-		if (start == _leaf) return false;
-		if (level == 1) {
-			std::cout << start->data.first << " ";
-			return true;
-		}
-		bool left = level_order(start->Lchild, level - 1);
+		if (start == _leaf)	return false;
+		if (level == 1)		return true;
+		bool left  = level_order(start->Lchild, level - 1);
 		bool right = level_order(start->Rchild, level - 1);
 
 		return (left || right);
@@ -290,6 +389,14 @@ public:
 
 	Node_ptr	root() const {return _root;}
 	size_t		size() const {return _size;}
+
+	bool is_end(Node_ptr A) {
+		if (A->Lchild && A->Lchild == _leaf && A->Rchild && A->Rchild == _leaf) return true;return false;
+	}
+
+	bool one_child(Node_ptr A) {
+		return ((A->Lchild && A->Lchild != _leaf) + (A->Rchild && A->Rchild != _leaf)) == 1;
+	}
 
 	void show_tree(Node_ptr node) {
 		if (node != _leaf)
