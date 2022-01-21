@@ -41,6 +41,8 @@ private:
 	size_type 				_size;
 	key_compare				_comp;
 	allocator_type			_alloc;
+	Node_ptr				_root;
+	Node_ptr				_leaf;
 
 	Node_ptr	new_node(value_type val, Node_ptr parent) {
 		Node_ptr newNode = _alloc.allocate(1);
@@ -52,14 +54,6 @@ private:
 		return newNode;
 	}
 
-public:
-	Node_ptr				_root;
-	Node_ptr				_leaf;
-	RBT(allocator_type alloc = allocator_type()) : _alloc(alloc), _size(0) {
-		_leaf			= new_node(value_type(), nullptr);
-		_leaf->color 	= BLACK;
-	}
-
 	void transplant(Node_ptr A, Node_ptr B) {
 		if (!A->parent)
 			_root = B;
@@ -69,42 +63,6 @@ public:
 			A->parent->Rchild = B;
 		B->parent = A->parent;
 	}
-
-	void insert(value_type val) {
-	if (!_size++) {
-		_root = new_node(val, nullptr);
-		_root->color = BLACK;
-		return ;
-	}
-	else
-	{
-		Node_ptr currentNode	= _root;
-		Node_ptr previousNode	= _root;
-		while (currentNode != _leaf)
-		{
-			previousNode = currentNode;
-			if (val.first == currentNode->data.first)
-					return ;
-			if  (_comp(val.first, currentNode->data.first))
-				currentNode = currentNode->Lchild;
-			else
-				currentNode = currentNode->Rchild;
-		}
-		if (_comp(val.first, previousNode->data.first))
-		{
-			previousNode->Lchild = new_node(val, previousNode);
-			currentNode = previousNode->Lchild;
-		}
-		else
-		{
-			previousNode->Rchild = new_node(val, previousNode);
-			currentNode = previousNode->Rchild;
-		}
-		if (!previousNode->parent)
-			return;
-		fix_insert(currentNode);
-	}
-}
 
 	void fix_insert(Node_ptr currentNode) {
 		while (currentNode->parent->color == RED)
@@ -197,58 +155,13 @@ public:
 		x->parent = y;
 	}
 
-	void	delete_node(key_type key)
-	{
-		// static int n = 0;
-		// n++;
-		// std::cout << n << "\n";
-		Node_ptr root = _root;
-		Node_ptr tmp = search(root, key);
-		if (tmp == _leaf)
-			return ;
-		Node_ptr A = tmp;
-		COLOR original_color = A->color;
-		Node_ptr B = nullptr;
-		if (tmp->Lchild == _leaf) {
-			B = tmp->Rchild;
-			transplant(tmp, tmp->Rchild);
-		}
-		else if (tmp->Rchild == _leaf) {
-			B = tmp->Lchild;
-			transplant(tmp, tmp->Lchild);
-		}
-		else
-		{
-			A = min(tmp->Rchild);
-			original_color = A->color;
-			B = A->Rchild;
-			if (A->parent == tmp)
-				B->parent = A;
-			else
-			{
-				transplant(A, A->Rchild);
-				A->Rchild = tmp->Rchild;
-				A->Rchild->parent = A;
-			}
-			transplant(tmp, A);
-			A->Lchild = tmp->Lchild;
-			A->Lchild->parent = A;
-			A->color = tmp->color;
-		}
-		_alloc.destroy(tmp);
-		_alloc.deallocate(tmp, 1);
-		_size--;
-		if (original_color == BLACK)
-			fix_delete(B);
-	}
-
 	void fix_delete(Node_ptr A) {
 		Node_ptr tmp = nullptr;
 		while (A != _root && A->color == BLACK)
 		{
 			if (A == A->parent->Lchild) {
 				tmp = A->parent->Rchild;
-				if (A->color == RED) {
+				if (tmp->color == RED) {
 					tmp->color = BLACK;
 					A->parent->color = RED;
 					rotate_left(A->parent);
@@ -302,6 +215,98 @@ public:
 			}
 		}
 		A->color = BLACK;
+	}
+
+public:
+
+	RBT(allocator_type alloc = allocator_type()) : _size(0), _alloc(alloc) {
+		_leaf			= new_node(value_type(), nullptr);
+		_leaf->color 	= BLACK;
+	}
+
+	void clear() {
+		while (_size > 0)
+			delete_node(_root->data.first);
+		_alloc.destroy(_root);
+		_alloc.deallocate(_root, 1);
+	}
+
+	void insert(value_type val) {
+	if (!_size++) {
+		_root = new_node(val, nullptr);
+		_root->color = BLACK;
+		return ;
+	}
+	else
+	{
+		Node_ptr currentNode	= _root;
+		Node_ptr previousNode	= _root;
+		while (currentNode != _leaf)
+		{
+			previousNode = currentNode;
+			if (val.first == currentNode->data.first)
+					return ;
+			if  (_comp(val.first, currentNode->data.first))
+				currentNode = currentNode->Lchild;
+			else
+				currentNode = currentNode->Rchild;
+		}
+		if (_comp(val.first, previousNode->data.first))
+		{
+			previousNode->Lchild = new_node(val, previousNode);
+			currentNode = previousNode->Lchild;
+		}
+		else
+		{
+			previousNode->Rchild = new_node(val, previousNode);
+			currentNode = previousNode->Rchild;
+		}
+		if (!previousNode->parent)
+			return;
+		fix_insert(currentNode);
+	}
+}
+
+	void	delete_node(key_type key)
+	{
+		Node_ptr root = _root;
+		Node_ptr tmp = search(root, key);
+		if (tmp == _leaf)
+			return ;
+		Node_ptr A = tmp;
+		COLOR original_color = A->color;
+		Node_ptr B = nullptr;
+		if (tmp->Lchild == _leaf) {
+			B = tmp->Rchild;
+			transplant(tmp, tmp->Rchild);
+		}
+		else if (tmp->Rchild == _leaf) {
+			B = tmp->Lchild;
+			transplant(tmp, tmp->Lchild);
+		}
+		else
+		{
+			A = min(tmp->Rchild);
+			original_color = A->color;
+			B = A->Rchild;
+			if (A->parent == tmp)
+				B->parent = A;
+			else
+			{
+				transplant(A, A->Rchild);
+				A->Rchild = tmp->Rchild;
+				A->Rchild->parent = A;
+			}
+			transplant(tmp, A);
+			A->Lchild = tmp->Lchild;
+			A->Lchild->parent = A;
+			A->color = tmp->color;
+		}
+		_alloc.destroy(tmp);
+		_alloc.deallocate(tmp, 1);
+		_size--;
+		if (original_color == BLACK)
+			fix_delete(B);
 	}
 
 	Node_ptr search(Node_ptr start, key_type key) {
