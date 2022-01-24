@@ -89,6 +89,16 @@ public:
 				NodePtr = Tree->predecessor(NodePtr);
 				return tmp;
 			}
+		map_iter&	operator+ (size_type offset) {
+			for (size_type n = 0; n < offset; n++)
+				operator++();
+			return *this;
+			}
+		map_iter&	operator- (size_type offset) {
+			for (size_type n = 0; n < offset; n++)
+				operator--();
+			return *this;
+			}
 		};
 
 		class const_map_iter : public ft::iterator<ft::random_access_iterator_tag, T, difference_type, pointer, reference>
@@ -133,6 +143,16 @@ public:
 				NodePtr = Tree->predecessor(NodePtr);
 				return tmp;
 			}
+		const_map_iter&	operator+ (size_type offset) {
+			for (size_type n = 0; n < offset; n++)
+				operator++();
+			return *this;
+			}
+		const_map_iter&	operator- (size_type offset) {
+			for (size_type n = 0; n < offset; n++)
+				operator--();
+			return *this;
+			}
 		};
 
 		class reverse_map_iter : public ft::iterator<ft::random_access_iterator_tag, T, difference_type, pointer, reference>
@@ -175,6 +195,16 @@ public:
 				reverse_map_iter tmp(*this);
 				NodePtr = Tree->successor(NodePtr);
 				return tmp;
+			}
+		reverse_map_iter&	operator+ (size_type offset) {
+			for (size_type n = 0; n < offset; n++)
+				operator--();
+			return *this;
+			}
+		reverse_map_iter&	operator- (size_type offset) {
+			for (size_type n = 0; n < offset; n++)
+				operator++();
+			return *this;
 			}
 		};
 
@@ -221,6 +251,16 @@ public:
 				NodePtr = Tree->sucessor(NodePtr);
 				return tmp;
 			}
+		const_reverse_map_iter&	operator+ (size_type offset) {
+			for (size_type n = 0; n < offset; n++)
+				operator--();
+			return *this;
+			}
+		const_reverse_map_iter&	operator- (size_type offset) {
+			for (size_type n = 0; n < offset; n++)
+				operator++();
+			return *this;
+			}
 		};
 
 	typedef map_iter				iterator;	
@@ -231,7 +271,7 @@ public:
 //-----------------------------------------<< Constructors >>-----------------------------------------------
 
 	explicit map (const key_compare& comp = key_compare(),
-				const allocator_type& alloc = allocator_type()): _comp(comp), _alloc(alloc) {
+				const allocator_type& alloc = allocator_type()): _rbt(alloc), _comp(comp), _alloc(alloc) {
 	}
 
 	// template <class InputIterator>
@@ -293,6 +333,33 @@ template <class InputIterator>
 		while (first != last)
 			_rbt.insert(*first++);
 		_rbt.insert(*first);
+	}
+
+
+	void erase (iterator position) {
+		_rbt.delete_node((*position).first);
+	}
+
+	size_type erase (const key_type& k) {
+		size_type sizeBefore = _rbt.size();
+		_rbt.delete_node(k);
+		return sizeBefore != _rbt.size() ? 1 : 0;
+	}
+
+	void erase (iterator ItFirst, iterator last) {
+		while (ItFirst != last)
+			_rbt.delete_node((*ItFirst++).first);
+		_rbt.delete_node((*ItFirst).first);	
+	}
+
+	void swap (map& x) {
+		RBTree tmp = _rbt;
+		_rbt 	= x._rbt;
+		x._rbt	= tmp;
+	}
+
+	void clear() {
+		_rbt.clear();
 	}
 
 };

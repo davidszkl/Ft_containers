@@ -1,5 +1,6 @@
 #include "map.hpp"
 #include <map>
+#include <stdlib.h>
 template <typename U, typename V >
 void show_map(ft::map<U, V> map) {
 	if (map.empty())
@@ -142,16 +143,46 @@ int main()
 	tmp.insert(copy.begin(), copy.end());
 	show_map(copy);
 	show_map(tmp);
+	tmp.clear();
 	}
 	std::cout << "range insert :                    \033[1;32mok\033[0m\n";
-
-
-
-
-
-
-
-
+	std::cout << "-----------iterator_delete----------\n";
+	{
+	My.erase(My.begin());
+	show_map(My);
+	std::cout << "single delete :                   \033[1;32mok\033[0m\n";
+	std::cout << "-------------key_delete-------------\n";
+	size_t tmp;
+	tmp = My.erase(1);
+	std::cout << "tmp = " << tmp << std::endl;
+	show_map(My);
+	tmp = My.erase(1);
+	std::cout << "tmp = " << tmp << std::endl;
+	show_map(My);
+	std::cout << "key delete :                      \033[1;32mok\033[0m\n";
+	std::cout << "------------range_delete------------\n";
+	My.erase(My.begin(), My.begin() + 3);
+	show_map(My);
+	std::cout << "range delete :                    \033[1;32mok\033[0m\n";
+	}
+	std::cout << "---------------swap-----------------\n";
+	{
+		ft::map<int, std::string>	tmp;
+		for (char n = 0; n < 5; n++)
+			tmp.insert(ft::make_pair<const int, std::string>(n + 1, "tmp"));
+		show_map(My);
+		show_map(tmp);
+		My.swap(tmp);
+		show_map(My);
+		show_map(tmp);
+		std::cout << "swap :                            \033[1;32mok\033[0m\n";
+		std::cout << "---------------swap-----------------\n";
+		tmp.clear();
+	}
+	My.clear();
+	Stl.clear();
+	//copy.clear();
+	system("leaks a.out");
 	//My._rbt.show_tree(My._rbt.root());
 
 }
