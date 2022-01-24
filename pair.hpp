@@ -22,7 +22,6 @@ template<class U, class V>
 
 //operator = 
 	pair& operator= (const pair& pr) {
-		first = pr.first;
 		second = pr.second;
 		return *this;
 	}
@@ -31,17 +30,17 @@ template<class U, class V>
 //relational operators
 
 template <class T1, class T2>
-	bool operator== (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {return T1 == T2;}
+	bool operator== (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {return lhs.first == rhs.first;}
 template <class T1, class T2>
-	bool operator!= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {return T1 != T2;}
+	bool operator!= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {return lhs.first != rhs.first;}
 template <class T1, class T2>
-	bool operator<  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {return T1 < T2;}
+	bool operator<  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {return lhs.first < rhs.first;}
 template <class T1, class T2>
-	bool operator<= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {return T1 <= T2;}
+	bool operator<= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {return lhs.first <= rhs.first;}
 template <class T1, class T2>
-	bool operator>  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {return T1 > T2;}
+	bool operator>  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {return lhs.first > rhs.first;}
 template <class T1, class T2>
-	bool operator>= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {return T1 >= T2;}
+	bool operator>= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {return lhs.first >= rhs.first;}
 
 template <class T1, class T2>
 	pair<T1,T2> make_pair (T1 x, T2 y) {return pair<T1, T2>(x, y);}

@@ -224,6 +224,17 @@ public:
 		_leaf->color 	= BLACK;
 	}
 
+	RBT(const RBT& cpy) {*this = cpy;}
+	RBT& operator= (const RBT& rhs) {
+		_root	= rhs._root;
+		_size	= rhs._size;
+		_comp	= rhs._comp;
+		_alloc	= rhs._alloc;
+		_leaf	= rhs._leaf;
+		return *this;
+	}
+
+	~RBT(){}
 	void clear() {
 		while (_size > 0)
 			delete_node(_root->data.first);
@@ -231,11 +242,12 @@ public:
 		_alloc.deallocate(_root, 1);
 	}
 
-	void insert(value_type val) {
-	if (!_size++) {
+	Node_ptr insert(value_type val) {
+	if (!_size) {
 		_root = new_node(val, nullptr);
 		_root->color = BLACK;
-		return ;
+		_size++;
+		return _root;
 	}
 	else
 	{
@@ -245,7 +257,7 @@ public:
 		{
 			previousNode = currentNode;
 			if (val.first == currentNode->data.first)
-					return ;
+					return currentNode;
 			if  (_comp(val.first, currentNode->data.first))
 				currentNode = currentNode->Lchild;
 			else
@@ -261,9 +273,11 @@ public:
 			previousNode->Rchild = new_node(val, previousNode);
 			currentNode = previousNode->Rchild;
 		}
+		_size++;
 		if (!previousNode->parent)
-			return;
+			return currentNode;
 		fix_insert(currentNode);
+		return currentNode;
 	}
 }
 
@@ -418,7 +432,7 @@ public:
 		else if (node->parent && node == node->parent->Rchild)
 			std::cout << "RCHILD [" << node->parent->data.first << "] ";
 		else
-			std::cout << "ROOT   ";
+			std::cout << "ROOT   [R] ";
 		std::cout << "[" << node->data.first << "][" << node->data.second << "][";
 		if (node->color == BLACK)
 			std::cout << "BLACK]" << std::endl;

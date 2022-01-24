@@ -38,7 +38,7 @@ namespace ft
 	protected:
 
 		pointer				_arr;
-		std::allocator<T>	_alloc;
+		allocator_type		_alloc;
 		size_type			_size;
 		size_type			_cap;
 

@@ -23,11 +23,11 @@
 	template <typename Iterator>
 	struct iterator_traits
 	{
-		typedef typename Iterator::iterator_category iterator_category;
-		typedef typename Iterator::value_type value_type;
-		typedef typename Iterator::difference_type difference_type;
-		typedef typename Iterator::pointer pointer;
-		typedef typename Iterator::reference reference;
+		typedef typename Iterator::iterator_category	iterator_category;
+		typedef typename Iterator::value_type			value_type;
+		typedef typename Iterator::difference_type		difference_type;
+		typedef typename Iterator::pointer				pointer;
+		typedef typename Iterator::reference			reference;
 	};
 
 	template <typename T>
@@ -121,7 +121,6 @@
 	template<> struct is_integral_base<char16_t>					: public std::true_type {};
 	template<> struct is_integral_base<char32_t>					: public std::true_type {};
 	template<> struct is_integral_base<wchar_t>						: public std::true_type {};
-	template<> struct is_integral_base<unsigned wchar_t>			: public std::true_type {};
 	template<> struct is_integral_base<short>						: public std::true_type {};
 	template<> struct is_integral_base<unsigned short>				: public std::true_type {};
 	template<> struct is_integral_base<int>							: public std::true_type {};
@@ -138,7 +137,6 @@
 	template<> struct is_integral_base<const char16_t>					: public std::true_type {};
 	template<> struct is_integral_base<const char32_t>					: public std::true_type {};
 	template<> struct is_integral_base<const wchar_t>					: public std::true_type {};
-	template<> struct is_integral_base<const unsigned wchar_t>			: public std::true_type {};
 	template<> struct is_integral_base<const short>						: public std::true_type {};
 	template<> struct is_integral_base<const unsigned short>			: public std::true_type {};
 	template<> struct is_integral_base<const int>						: public std::true_type {};
@@ -155,7 +153,6 @@
 	template<> struct is_integral_base<volatile char16_t>					: public std::true_type {};
 	template<> struct is_integral_base<volatile char32_t>					: public std::true_type {};
 	template<> struct is_integral_base<volatile wchar_t>					: public std::true_type {};
-	template<> struct is_integral_base<volatile unsigned wchar_t>			: public std::true_type {};
 	template<> struct is_integral_base<volatile short>						: public std::true_type {};
 	template<> struct is_integral_base<volatile unsigned short>				: public std::true_type {};
 	template<> struct is_integral_base<volatile int>						: public std::true_type {};

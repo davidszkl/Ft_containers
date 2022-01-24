@@ -1,9 +1,8 @@
 #pragma once
 #include <functional>	// std::less
 #include "pair.hpp"
-#include "RandIter.hpp"
-#include "ReverseRandIter.hpp"
 #include "RBTree.hpp"
+#include "utils.hpp"
 
 namespace ft
 { //ft
@@ -11,96 +10,291 @@ namespace ft
 template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<pair<const Key,T> > >
 class map
 {
+public:
 
-typedef Key									key_type;
-typedef T									mapped_type;
-typedef pair<const key_type, mapped_type>	value_type;
-typedef Compare								key_compare;
-typedef Alloc								allocator_type;
-typedef value_type&							reference;
-typedef const value_type&					const_reference;
-typedef value_type*							pointer;
-typedef const value_type*					const_pointer;
-typedef RandIter<value_type>				iterator;
-typedef RandIter<const value_type>			const_iterator;
-typedef ReverseRandIter<value_type>			reverse_iterator;
-typedef ReverseRandIter<const value_type>	const_reverse_iterator;
-typedef ptrdiff_t							difference_type;
-typedef size_t								size_type;
+	typedef Key									key_type;
+	typedef T									mapped_type;
+	typedef pair<const key_type, mapped_type>	value_type;
+	typedef Compare								key_compare;
+	typedef Alloc								allocator_type;
+	typedef value_type&							reference;
+	typedef const value_type&					const_reference;
+	typedef value_type*							pointer;
+	typedef const value_type*					const_pointer;
+	typedef ptrdiff_t							difference_type;
+	typedef size_t								size_type;
 
-class value_compare : public std::binary_function<value_type, value_type, bool>
-{
+	typedef RBT<ft::map<Key, T, Compare>, allocator_type>	RBTree;
+	typedef typename RBTree::Node_ptr						Node_ptr;
+
+	RBTree										_rbt; //TO ERASE
+private:
+
+	// RBTree									_rbt;
+	Compare										_comp;
+	std::allocator<pair<const key_type, T> >	_alloc;
+
+public:
+
+	class value_compare : public std::binary_function<value_type, value_type, bool>
+		{
+			public:
+				bool operator()(const value_type& left, const value_type& right) const {
+					return (comp(left.first, right.first));
+				}
+				value_compare(key_compare pred) : comp(pred) {}
+			protected:
+				key_compare comp;
+		};
+
+//ITERATORS DEFINITIONS=====================================================================================
+
+	class map_iter : public ft::iterator<ft::random_access_iterator_tag, T, difference_type, pointer, reference>
+		{
+			Node_ptr	NodePtr;
+			RBTree*		Tree;
 	public:
-		bool operator()(const value_type& left, const value_type& right) const
-			return (comp(left.first, right.first));
-		value_compare(key_compare pred) : comp(pred) {}
-	protected:
-		key_compare comp;
-};
+			map_iter(): NodePtr(nullptr), Tree(nullptr) {}
+			map_iter(const map_iter& cpy) {*this = cpy;}
+			map_iter(Node_ptr ptr, RBTree* rbt): NodePtr(ptr), Tree(rbt) {}
+			map_iter& operator=(const map_iter& rhs) {
+				NodePtr = rhs.NodePtr;
+				Tree	= rhs.Tree;
+				return *this;
+			}
+			~map_iter(){}
+			
+		reference	operator*() const {return (*NodePtr).data;}
+		pointer		operator->() const {return &(operator*());}
 
-template < class value_type = pair<const key_type, mapped_type > >
-class map_iter
-{
-public:	
+		bool		operator== (map_iter& rhs) {return NodePtr == rhs.NodePtr;}
+		bool		operator!= (map_iter& rhs) {return NodePtr != rhs.NodePtr;}
+		map_iter&	operator++ () {
+				NodePtr = Tree->successor(NodePtr);
+				return *this;
+			}
+		map_iter	operator++ (int dummy) {
+				(void)dummy;
+				map_iter tmp(*this);
+				NodePtr = Tree->successor(NodePtr);
+				return tmp;
+			}
+		map_iter&	operator-- () {
+				NodePtr = Tree->predecessor(NodePtr);
+				return *this;
+			}
+		map_iter	operator-- (int dummy) {
+				(void)dummy;
+				map_iter tmp(*this);
+				NodePtr = Tree->predecessor(NodePtr);
+				return tmp;
+			}
+		};
 
-	typedef key_type					key;
-	typedef mapped_type					data;
-	typedef typename ft::RBT::Node_ptr	NodePtr;
+		class const_map_iter : public ft::iterator<ft::random_access_iterator_tag, T, difference_type, pointer, reference>
+		{	
+			Node_ptr	NodePtr;
+			RBTree*		Tree;
+	public:
+			const_map_iter(): NodePtr(nullptr), Tree(nullptr) {}
+			const_map_iter(const map_iter& cpy) {*this = cpy;}
+			const_map_iter(const const_map_iter& cpy) {*this = cpy;}
+			const_map_iter(const Node_ptr ptr, RBTree* rbt): NodePtr(ptr), Tree(rbt) {}
+			const_map_iter(const Node_ptr ptr, const RBTree* rbt): NodePtr(ptr), Tree(rbt) {}
+			const_map_iter& operator=(const map_iter& rhs) {
+				NodePtr = rhs.NodePtr;
+				Tree	= rhs.Tree;
+				return *this;
+			}
+			~const_map_iter(){}
+			
+		reference	operator*()  const {return (*NodePtr).data;}
+		pointer		operator->() const {return &(operator*());}
 
-private:
-	NodePtr	_ptr;
+		bool		operator== (const_map_iter& rhs) const {return NodePtr == rhs.NodePtr;}
+		bool		operator!= (const_map_iter& rhs) const {return NodePtr != rhs.NodePtr;}
+		const_map_iter&	operator++ () {
+				NodePtr = Tree->successor(NodePtr);
+				return *this;
+			}
+		const_map_iter	operator++ (int dummy) {
+				(void)dummy;
+				const_map_iter tmp(*this);
+				NodePtr = Tree->successor(NodePtr);
+				return tmp;
+			}
+		const_map_iter&	operator-- () {
+				NodePtr = Tree->predecessor(NodePtr);
+				return *this;
+			}
+		const_map_iter	operator-- (int dummy) {
+				(void)dummy;
+				const_map_iter tmp(*this);
+				NodePtr = Tree->predecessor(NodePtr);
+				return tmp;
+			}
+		};
 
-public:
-	map_iter(): _ptr(nullptr) {}
-	map_iter(const map_iter& cpy): _ptr(cpy._ptr) {}
-	~map_iter()
-	map_iter& operator=(const map_iter& rhs) {_ptr = cpy._ptr;}
+		class reverse_map_iter : public ft::iterator<ft::random_access_iterator_tag, T, difference_type, pointer, reference>
+		{
+			Node_ptr	NodePtr;
+			RBTree*		Tree;
 
-	bool operator==(const map_iter& lhs, const map_iter& rhs) const {return lhs._ptr == cpy._ptr;}
-	bool operator!=(const map_iter& lhs, const map_iter& rhs) const {return lhs._ptr != cpy._ptr;}
-	data operator*(const map_iter& lhs) const {return lhs._ptr->data.second;}
-	map_iter& operator++() {_ptr = _ptr.successor(); return *this;}
-	map_iter& operator++(int dummy) {
-		(void)dummy;
-		map_iter tmp = map_iter(this);
-		operator++();
-		return tmp;
-	}
+	public:
+			reverse_map_iter(): NodePtr(nullptr), Tree(nullptr) {}
+			reverse_map_iter(const reverse_map_iter& cpy) {*this = cpy;}
+			reverse_map_iter(Node_ptr ptr, RBTree* rbt): NodePtr(ptr), Tree(rbt) {}
+			reverse_map_iter& operator=(const reverse_map_iter& rhs) {
+				NodePtr = rhs.NodePtr;
+				Tree	= rhs.Tree;
+				return *this;
+			}
+			~reverse_map_iter(){}
+			
+		reference	operator*() const {return (*NodePtr).data;}
+		pointer		operator->() const {return &(operator*());}
 
-};
+		bool		operator== (reverse_map_iter& rhs) {return NodePtr == rhs.NodePtr;}
+		bool		operator!= (reverse_map_iter& rhs) {return NodePtr != rhs.NodePtr;}
+		reverse_map_iter&	operator++ () {
+				NodePtr = Tree->predecessor(NodePtr);
+				return *this;
+			}
+		reverse_map_iter	operator++ (int dummy) {
+				(void)dummy;
+				reverse_map_iter tmp(*this);
+				NodePtr = Tree->predecessor(NodePtr);
+				return tmp;
+			}
+		reverse_map_iter&	operator-- () {
+				NodePtr = Tree->successor(NodePtr);
+				return *this;
+			}
+		reverse_map_iter	operator-- (int dummy) {
+				(void)dummy;
+				reverse_map_iter tmp(*this);
+				NodePtr = Tree->successor(NodePtr);
+				return tmp;
+			}
+		};
 
-private:
+		class const_reverse_map_iter : public ft::iterator<ft::random_access_iterator_tag, T, difference_type, pointer, reference>
+		{
+			Node_ptr	NodePtr;
+			RBTree*		Tree;
 
-	RBT									_rbt;
-	Compare								_comp;
-	allocator_type						_alloc;
-	size_type							_size;
+	public:
+			const_reverse_map_iter(): NodePtr(nullptr), Tree(nullptr) {}
+			const_reverse_map_iter(const reverse_map_iter& cpy) {*this = cpy;}
+			const_reverse_map_iter(const const_reverse_map_iter& cpy) {*this = cpy;}
+			const_reverse_map_iter(const Node_ptr ptr, RBTree* rbt): NodePtr(ptr), Tree(rbt) {}
+			const_reverse_map_iter(const Node_ptr ptr, const RBTree* rbt): NodePtr(ptr), Tree(rbt) {}
+			const_reverse_map_iter& operator=(const reverse_map_iter& rhs) {
+				NodePtr = rhs.NodePtr;
+				Tree	= rhs.Tree;
+				return *this;
+			}
+			~const_reverse_map_iter(){}
+			
+		reference	operator*()  const {return (*NodePtr).data;}
+		pointer		operator->() const {return &(operator*());}
 
-public:
+		bool		operator== (const_reverse_map_iter& rhs) const {return NodePtr == rhs.NodePtr;}
+		bool		operator!= (const_reverse_map_iter& rhs) const {return NodePtr != rhs.NodePtr;}
+		const_reverse_map_iter&	operator++ () {
+				NodePtr = Tree->predecessor(NodePtr);
+				return *this;
+			}
+		const_reverse_map_iter	operator++ (int dummy) {
+				(void)dummy;
+				const_reverse_map_iter tmp(*this);
+				NodePtr = Tree->predecessor(NodePtr);
+				return tmp;
+			}
+		const_reverse_map_iter&	operator-- () {
+				NodePtr = Tree->sucessor(NodePtr);
+				return *this;
+			}
+		const_reverse_map_iter	operator-- (int dummy) {
+				(void)dummy;
+				const_reverse_map_iter tmp(*this);
+				NodePtr = Tree->sucessor(NodePtr);
+				return tmp;
+			}
+		};
+
+	typedef map_iter				iterator;	
+	typedef const_map_iter			const_iterator;
+	typedef reverse_map_iter		reverse_iterator;	
+	typedef const_reverse_map_iter	const_reverse_iterator;
 
 //-----------------------------------------<< Constructors >>-----------------------------------------------
 
-	explicit map (const key_compare& _comp = key_compare(),
-				const allocator_type& _alloc = allocator_type()): _size(0) {}
+	explicit map (const key_compare& comp = key_compare(),
+				const allocator_type& alloc = allocator_type()): _comp(comp), _alloc(alloc) {
+	}
 
-	template <class InputIterator>
-	map (InputIterator first, InputIterator last,
-		const key_compare& comp = key_compare(),
-		const allocator_type& alloc = allocator_type());
+	// template <class InputIterator>
+	// map (InputIterator first, InputIterator last,
+	// 	const key_compare& comp = key_compare(),
+	// 	const allocator_type& alloc = allocator_type()):
 
-	map (const map& x);
-	~map();
+	map (const map& x) {*this = x;}
+	~map(){};
+
+	map&	operator= (const map& rhs) {
+		_rbt	= rhs._rbt;
+		_comp	= rhs._comp;
+		_alloc	= rhs._alloc;
+		return *this;
+	}
 
 //-----------------------------------------<< Iterators >>--------------------------------------------------
 
-	iterator				begin()	 {}
-	iterator				end()	 {}
-	reverse_iterator		rbegin() {}
-	reverse_iterator		rend()	 {}
-	const_iterator			begin()	 const {}
-	const_iterator			end()	 const {}
-	reverse_const_iterator	rbegin() const {}
-	reverse_const_iterator	rend()	 const {}
+	iterator					begin()	 {return iterator(_rbt.min(_rbt.root()) , &_rbt);}
+	iterator					end()	 {return iterator(_rbt.max(_rbt.root()) , &_rbt);}
+	reverse_iterator			rbegin() {return reverse_iterator(_rbt.max(_rbt.root()) , &_rbt);}
+	reverse_iterator			rend()	 {return reverse_iterator(_rbt.min(_rbt.root()) , &_rbt);}
+	const_iterator				begin()	 const {return const_iterator(_rbt.min(_rbt.root()) , &_rbt);}
+	const_iterator				end()	 const {return const_iterator(_rbt.max(_rbt.root()) , &_rbt);}
+	const_reverse_iterator		rbegin() const {return const_reverse_iterator(_rbt.max(_rbt.root()) , &_rbt);}
+	const_reverse_iterator		rend()	 const {return const_reverse_iterator(_rbt.min(_rbt.root()) , &_rbt);}
+
+//-----------------------------------------<< Capacity >>---------------------------------------------------
+
+	bool						empty()		const {return _rbt.size() == 0;}
+	size_type					size()		const {return _rbt.size();}
+	size_type					max_size()	const {return _alloc.max_size();}
+
+//--------------------------------------<< Element Access >>------------------------------------------------	
+
+	mapped_type& 				operator[] (const key_type& k) {
+		mapped_type& a = insert(ft::make_pair(k, T())).first->second;
+		return a;
+	}
+
+//-----------------------------------------<< Modifiers >>--------------------------------------------------	
+
+pair<iterator, bool> insert (const value_type& val) {
+	size_type	size_before(_rbt.size());
+	Node_ptr	tmp = _rbt.insert(val);
+	if (_rbt.size() != size_before)
+		return ft::make_pair<iterator, bool>(iterator(tmp, &_rbt), true);
+	return ft::make_pair<iterator, bool>(iterator(tmp, &_rbt), false);
+}
+
+iterator insert (iterator position, const value_type& val) {
+	(void)position;
+	return iterator(_rbt.insert(val), &_rbt);
+}
+
+template <class InputIterator>
+	void insert (InputIterator first, InputIterator last) {
+		while (first != last)
+			_rbt.insert(*first++);
+		_rbt.insert(*first);
+	}
+
 };
 
 } //ft

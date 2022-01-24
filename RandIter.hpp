@@ -13,6 +13,9 @@
 # define RANDITER_HPP
 #include <iostream>
 
+namespace ft
+{
+
 template <typename T>
 class RandIter
 {
@@ -23,7 +26,7 @@ public:
     typedef T*				pointer;
     typedef T&				ref;
 
-	pointer getPtr() {return _ptr;}
+	pointer getPtr() const {return _ptr;}
 
 private:
 
@@ -114,11 +117,13 @@ public:
 		return _ptr[offset];
 	}
 
-	bool operator<(const RandIter<T> &rhs) 	{return _ptr < rhs._ptr;}
-	bool operator<=(const RandIter<T> &rhs)	{return _ptr <= rhs._ptr;}
-	bool operator>(const RandIter<T> &rhs)	{return _ptr > rhs._ptr;}
-	bool operator>=(const RandIter<T> &rhs)	{return _ptr >= rhs._ptr;}
-	bool operator==(const RandIter<T> &rhs)	{return _ptr == rhs._ptr;}
-	bool operator!=(const RandIter<T> &rhs)	{return _ptr != rhs._ptr;}
+	bool operator<(const RandIter<T> &rhs) 	const {return _ptr < rhs._ptr;}
+	bool operator<=(const RandIter<T> &rhs)	const {return _ptr <= rhs._ptr;}
+	bool operator>(const RandIter<T> &rhs)	const {return _ptr > rhs._ptr;}
+	bool operator>=(const RandIter<T> &rhs)	const {return _ptr >= rhs._ptr;}
+	bool operator==(const RandIter<T> &rhs)	const {return _ptr == rhs._ptr;}
+	bool operator!=(const RandIter<T> &rhs)	const {return _ptr != rhs._ptr;}
 };
+
+}
 #endif
