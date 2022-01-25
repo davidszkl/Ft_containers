@@ -280,7 +280,7 @@ public:
 	// 	const allocator_type& alloc = allocator_type()):
 
 	map (const map& x) {*this = x;}
-	~map(){};
+	~map(){_rbt.clear(_rbt.root());}
 
 	map&	operator= (const map& rhs) {
 		_rbt	= rhs._rbt;
@@ -309,8 +309,7 @@ public:
 //--------------------------------------<< Element Access >>------------------------------------------------	
 
 	mapped_type& 				operator[] (const key_type& k) {
-		mapped_type& a = insert(ft::make_pair(k, T())).first->second;
-		return a;
+		return insert(ft::make_pair(k, T())).first->second;
 	}
 
 //-----------------------------------------<< Modifiers >>--------------------------------------------------	
