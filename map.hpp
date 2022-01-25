@@ -351,7 +351,10 @@ template <class InputIterator>
 	}
 
 	void swap (map& x)	{_rbt.swap(x._rbt);}
-	void clear()		{_rbt.clear(_rbt.root());}
+	void clear()		{
+		_rbt.show_tree(_rbt.root());
+		_rbt.clear(_rbt.root());
+		}
 
 };
 

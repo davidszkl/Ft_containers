@@ -41,6 +41,5 @@ int main ()
     My.insert(ft::make_pair<int, std::string>(5, "e"));
     show_map(My);
     My._rbt.show_tree(My._rbt.root());
-    //system("leaks a.out");
     return 0;
 }

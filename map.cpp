@@ -206,8 +206,14 @@ int main()
 		show_map(My);
 		show_map(tmp);
 		std::cout << "swap :                            \033[1;32mok\033[0m\n";
-		std::cout << "---------------swap-----------------\n";
 	}
+	std::cout << "--------------clear-----------------\n";
+	My = copy;
+	std::cout << My._rbt.root()->Lchild->Rchild->Rchild->data.first;
+	//show_map(My);
+	My.clear();
+	std::cout << std::endl;
+	show_map(My);
 
 	return 0;
 }

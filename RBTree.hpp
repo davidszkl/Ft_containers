@@ -35,13 +35,14 @@ public:
 	typedef typename Container::key_compare									key_compare;
 	typedef typename Container::size_type									size_type;
 
+	Node_ptr				_leaf;// GO TO PRIVATE
 private:
 
 	size_type 				_size;
 	key_compare				_comp;
 	allocator_type			_alloc;
 	Node_ptr				_root;
-	Node_ptr				_leaf;
+	
 
 	Node_ptr	new_node(value_type val, Node_ptr parent) {
 		Node_ptr newNode = _alloc.allocate(1);
@@ -245,11 +246,36 @@ public:
 	}
 
 	void clear(Node_ptr node) {
+		//std::cout << "node " << node << std::endl;
+		//std::cout << "leaf " << _leaf << std::endl;
+	//	std::cout << "key " << node->data.first << " ";
+	//	std::cout << "node " << node << std::endl;
 		if (node != _leaf) {
 			clear(node->Lchild);
 			clear(node->Rchild);
-			delete_node(node->data.first);
+			//std::cout << "D key " << node->data.first << " ";
+			//std::cout << "D node " << node << std::endl;
+			//delete_node(node->data.first);
+			//_alloc.destroy(node);
+			//_alloc.deallocate(node, 1);
+			//show_tree(_root);
+			if (node !=  _root)
+				simple_delete(node);
+			std::cout << std::endl;
 		}
+	}
+
+	void simple_delete(Node_ptr node) {
+		if (node->parent)
+		{
+			if (node == node->parent->Lchild)
+				node->parent->Lchild = _leaf;
+			else if (node == node->parent->Rchild)
+				node->parent->Rchild = _leaf;
+		}
+		std::cout << node->data.first << std::endl;
+		_alloc.destroy(node);
+		//_alloc.deallocate(node, 1);
 	}
 
 	void copy(Node_ptr node, const RBT & tree) {
