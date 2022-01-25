@@ -28,12 +28,20 @@ int main ()
 	std::map<int, std::string>	Stl;
 
 	My.insert(ft::make_pair<int, std::string>(1, "a"));
+    My._rbt.show_tree(My._rbt.root());
+    std::cout << std::endl;
 	My.insert(ft::make_pair<int, std::string>(2, "b"));
+    My._rbt.show_tree(My._rbt.root());
+    std::cout << std::endl;
 	My.insert(ft::make_pair<int, std::string>(3, "c"));
+    My._rbt.show_tree(My._rbt.root());
+    std::cout << std::endl;
     My.insert(ft::make_pair<int, std::string>(4, "d"));
+    My._rbt.show_tree(My._rbt.root());
+    std::cout << std::endl;
     My.insert(ft::make_pair<int, std::string>(5, "e"));
     show_map(My);
     My._rbt.show_tree(My._rbt.root());
-    system("leaks a.out");
+    //system("leaks a.out");
     return 0;
 }
