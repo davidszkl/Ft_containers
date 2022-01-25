@@ -1,7 +1,6 @@
 #include "map.hpp"
 #include <map>
 #include <stdlib.h>
-
 template <typename U, typename V >
 void show_map(ft::map<U, V> map) {
 	if (map.empty())
@@ -24,9 +23,6 @@ void show_map(std::map< U, V> map) {
 
 int main ()
 {
-	ft::map<int, std::string>	My;
-	ft::map<int, std::string>	copy(My);
-	std::map<int, std::string>	Stl;
 	My.insert(ft::make_pair<int, std::string>(1, "a"));
 	My.insert(ft::make_pair<int, std::string>(2, "b"));
 	My.insert(ft::make_pair<int, std::string>(3, "c"));
@@ -39,4 +35,3 @@ int main ()
 
 
     return 0;
-}
