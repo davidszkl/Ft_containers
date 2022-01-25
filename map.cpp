@@ -153,7 +153,6 @@ int main()
 	tmp.insert(copy.begin(), copy.end());
 	show_map(copy);
 	show_map(tmp);
-	tmp.clear();
 	}
 	std::cout << "range insert :                    \033[1;32mok\033[0m\n";
 	std::cout << "-----------iterator_delete----------\n";
@@ -187,7 +186,6 @@ int main()
 		show_map(tmp);
 		std::cout << "swap :                            \033[1;32mok\033[0m\n";
 		std::cout << "---------------swap-----------------\n";
-		tmp.clear();
 	}
 	My.clear();
 	Stl.clear();

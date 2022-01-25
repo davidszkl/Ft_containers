@@ -223,8 +223,8 @@ public:
 		_leaf->color 	= BLACK;
 		_root			= _leaf;
 	}
-
-	RBT(const RBT& cpy) {
+ 
+	RBT(const RBT& cpy) : _size(0) {
 		_leaf			= new_node(value_type(), nullptr);
 		_leaf->color 	= BLACK;
 		_root			= _leaf;
@@ -259,6 +259,26 @@ public:
 			copy(node->Rchild, tree);
 			insert(ft::make_pair<key_type, mapped_type>(node->data.first, node->data.second));
 		}
+	}
+
+	void swap(RBT & tree) {
+		Node_ptr				tmp_root  = tree._root;
+		size_type 				tmp_size  = tree._size;
+		Node_ptr				tmp_leaf  = tree._leaf;
+		key_compare				tmp_comp  = tree._comp;
+		allocator_type			tmp_alloc = tree._alloc;
+
+		tree._root  = _root;
+		tree._size  = _size;
+		tree._leaf  = _leaf;
+		tree._comp  = _comp;
+		tree._alloc = _alloc;
+
+		_root = tmp_root;
+		_size = tmp_size;
+		_leaf = tmp_leaf;
+		_comp = tmp_comp;
+		_alloc = tmp_alloc;
 	}
 
 	Node_ptr insert(value_type val) {
