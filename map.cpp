@@ -14,6 +14,13 @@ void show_map(ft::map<U, V> map) {
 	std::cout << std::endl;
 }
 
+template <typename U, typename V >
+void show_map(std::map< U, V> map) {
+	for (size_t n = 0; n < map.size(); n++)
+		std::cout << "map[" << n << "] = " << map[n] << std::endl;
+	std::cout << std::endl;
+}
+
 int main()
 {
 	ft::map<int, std::string>	My;
@@ -25,6 +32,9 @@ int main()
 	My.insert(ft::make_pair<int, std::string>(1, "a"));
 	My.insert(ft::make_pair<int, std::string>(2, "b"));
 	My.insert(ft::make_pair<int, std::string>(3, "c"));
+	show_map(My);
+	show_map(copy);
+	show_map(Stl);
 	std::cout	<< "==========|MAP_ITERATOR|============\n";
 	std::cout	<< "\n-----------CONSTRUCTORS-------------\n";
 	iter it1;

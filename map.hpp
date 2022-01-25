@@ -335,7 +335,6 @@ template <class InputIterator>
 		_rbt.insert(*first);
 	}
 
-
 	void erase (iterator position) {
 		_rbt.delete_node((*position).first);
 	}
@@ -353,13 +352,13 @@ template <class InputIterator>
 	}
 
 	void swap (map& x) {
-		RBTree tmp = _rbt;
+		RBTree tmp(_rbt);
 		_rbt 	= x._rbt;
 		x._rbt	= tmp;
 	}
 
 	void clear() {
-		_rbt.clear();
+		_rbt.clear(_rbt.root());
 	}
 
 };

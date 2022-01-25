@@ -9,19 +9,19 @@ namespace ft
 enum COLOR {BLACK, RED};
 
 template<typename value_type>
-struct Node {
+struct s_Node {
 	value_type	data;
-	Node*		parent;
-	Node*		Lchild;
-	Node*		Rchild;
+	s_Node*		parent;
+	s_Node*		Lchild;
+	s_Node*		Rchild;
 	COLOR		color;
 
-	Node() : parent(nullptr), Lchild(nullptr), Rchild(nullptr), color(BLACK) {}
-	Node (value_type v) : data(v), parent(nullptr), Lchild(nullptr), Rchild(nullptr), color(BLACK){}
-	~Node() {}
+	s_Node() : parent(nullptr), Lchild(nullptr), Rchild(nullptr), color(BLACK) {}
+	s_Node (value_type v) : data(v), parent(nullptr), Lchild(nullptr), Rchild(nullptr), color(BLACK){}
+	~s_Node() {}
 };
 
-template<class Container, class Allocator = std::allocator<Node<typename Container::value_type> > >
+template<class Container, class Allocator = std::allocator<s_Node<typename Container::value_type> > >
 class RBT
 {
 public:
@@ -29,14 +29,13 @@ public:
 	typedef typename Container::value_type									value_type;
 	typedef typename Container::key_type									key_type;
 	typedef typename Container::mapped_type									mapped_type;
-	typedef typename Allocator::template rebind<Node<value_type> >::other	allocator_type;
-	typedef Node<value_type>												Node;
+	typedef typename Allocator::template rebind<s_Node<value_type> >::other	allocator_type;
+	typedef struct s_Node<value_type>										Node;
 	typedef Node*															Node_ptr;
 	typedef typename Container::key_compare									key_compare;
 	typedef typename Container::size_type									size_type;
 
 private:
-
 
 	size_type 				_size;
 	key_compare				_comp;
@@ -222,24 +221,44 @@ public:
 	RBT(allocator_type alloc = allocator_type()) : _size(0), _alloc(alloc) {
 		_leaf			= new_node(value_type(), nullptr);
 		_leaf->color 	= BLACK;
+		_root			= _leaf;
 	}
 
-	RBT(const RBT& cpy) {*this = cpy;}
+	RBT(const RBT& cpy) {
+		_leaf			= new_node(value_type(), nullptr);
+		_leaf->color 	= BLACK;
+		_root			= _leaf;
+		*this = cpy;
+	}
+
 	RBT& operator= (const RBT& rhs) {
-		_root	= rhs._root;
-		_size	= rhs._size;
-		_comp	= rhs._comp;
+		clear(_root);
+		copy(rhs._root, rhs);
 		_alloc	= rhs._alloc;
-		_leaf	= rhs._leaf;
 		return *this;
 	}
 
-	~RBT(){}
-	void clear() {
-		while (_size > 0)
-			delete_node(_root->data.first);
-		_alloc.destroy(_root);
-		_alloc.deallocate(_root, 1);
+	~RBT(){
+		clear(_root);
+		_alloc.destroy(_leaf);
+		_alloc.deallocate(_leaf, 1);	
+	}
+
+	void clear(Node_ptr node) {
+		if (node != _leaf) {
+			clear(node->Lchild);
+			clear(node->Rchild);
+			delete_node(node->data.first);
+		}
+	}
+
+	void copy(Node_ptr node, const RBT & tree) {
+		if (node != tree._leaf)
+		{
+			copy(node->Lchild, tree);
+			copy(node->Rchild, tree);
+			insert(ft::make_pair<key_type, mapped_type>(node->data.first, node->data.second));
+		}
 	}
 
 	Node_ptr insert(value_type val) {
@@ -410,7 +429,9 @@ public:
 	size_t		size() const {return _size;}
 
 	bool is_end(Node_ptr A) {
-		if (A->Lchild && A->Lchild == _leaf && A->Rchild && A->Rchild == _leaf) return true;return false;
+		if (A->Lchild && A->Lchild == _leaf && A->Rchild && A->Rchild == _leaf)
+			return true;
+		return false;
 	}
 
 	bool one_child(Node_ptr A) {
