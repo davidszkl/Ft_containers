@@ -2,20 +2,20 @@
 #include <map>
 #include <stdlib.h>
 template <typename U, typename V >
-void show_map(ft::map<U, V> map) {
+void show_map(ft::map<U, V> & map ) {
 	if (map.empty())
 	{
 		std::cout << "empty\n";
 		return ;
 	}
 	typename ft::RBT<ft::map<int, std::string> >::Node_ptr node =  map._rbt.min(map._rbt.root());
-	for (size_t n = 0; n < map.size(); n++, node = map._rbt.successor(node))
+	for (size_t n = 0; n < map.size() - 1; n++, node = map._rbt.successor(node))
 		std::cout << "map[" << n << "][key " << node->data.first << "] = " << map[node->data.first] << std::endl;
 	std::cout << std::endl;
 }
 
 template <typename U, typename V >
-void show_map(std::map< U, V> map) {
+void show_map(std::map< U, V> & map) {
 	for (size_t n = 0; n < map.size(); n++)
 		std::cout << "map[" << n << "] = " << map[n] << std::endl;
 	std::cout << std::endl;
@@ -23,6 +23,7 @@ void show_map(std::map< U, V> map) {
 
 int main()
 {
+	std::pair<int, int> pair;
 	ft::map<int, std::string>	My;
 	ft::map<int, std::string>	copy(My);
 	std::map<int, std::string>	Stl;
@@ -30,11 +31,26 @@ int main()
 	typedef ft::map<int, std::string>::reverse_iterator Riter;
 
 	My.insert(ft::make_pair<int, std::string>(1, "a"));
+	
+	std::cout << "SIZE " << My.size() << std::endl;
 	My.insert(ft::make_pair<int, std::string>(2, "b"));
+		std::cout << "SIZE " << My.size() << std::endl;
+
 	My.insert(ft::make_pair<int, std::string>(3, "c"));
+		std::cout << "SIZE " << My.size() << std::endl;
+
+	My.insert(ft::make_pair<int, std::string>(4, "d"));
+	My.insert(ft::make_pair<int, std::string>(-1, "c"));
+	My.insert(ft::make_pair<int, std::string>(5, "c"));
+
+	My.insert(ft::make_pair<int, std::string>(6, "c"));
+
+	std::cout << "SIZE " << My.size() << std::endl;
+
 	show_map(My);
 	show_map(copy);
 	show_map(Stl);
+
 	std::cout	<< "==========|MAP_ITERATOR|============\n";
 	std::cout	<< "\n-----------CONSTRUCTORS-------------\n";
 	iter it1;
@@ -111,7 +127,9 @@ int main()
 	std::cout << "map[1] = " << My[1] << std::endl;
 	std::cout << "map[2] = " << My[2] << std::endl;
 	std::cout << "map[3] = " << My[3] << std::endl;
+	My[4];
 	std::cout << "map[4] (doesn't exist yet) = " << My[4] << std::endl;
+	
 	std::cout << "map[4] (exists now) = " << My[4] << std::endl;
 	std::cout << "map[-1] = " << My[-1] << std::endl;
 	std::cout << "stl[1] = " << Stl[1] << std::endl;
@@ -157,10 +175,12 @@ int main()
 	std::cout << "range insert :                    \033[1;32mok\033[0m\n";
 	std::cout << "-----------iterator_delete----------\n";
 	{
+	show_map(My);
 	My.erase(My.begin());
 	show_map(My);
 	std::cout << "single delete :                   \033[1;32mok\033[0m\n";
 	std::cout << "-------------key_delete-------------\n";
+	{
 	size_t tmp;
 	tmp = My.erase(1);
 	std::cout << "tmp = " << tmp << std::endl;
@@ -173,6 +193,7 @@ int main()
 	My.erase(My.begin(), My.begin() + 3);
 	show_map(My);
 	std::cout << "range delete :                    \033[1;32mok\033[0m\n";
+	}
 	}
 	std::cout << "---------------swap-----------------\n";
 	{
@@ -187,10 +208,6 @@ int main()
 		std::cout << "swap :                            \033[1;32mok\033[0m\n";
 		std::cout << "---------------swap-----------------\n";
 	}
-	My.clear();
-	Stl.clear();
-	//copy.clear();
-	system("leaks a.out");
-	//My._rbt.show_tree(My._rbt.root());
 
+	return 0;
 }
