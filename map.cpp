@@ -9,7 +9,7 @@ void show_map(ft::map<U, V> map) {
 		return ;
 	}
 	typename ft::RBT<ft::map<int, std::string> >::Node_ptr node =  map._rbt.min(map._rbt.root());
-	for (size_t n = 0; n < map.size(); n++, node = map._rbt.successor(node))
+	for (size_t n = 0; n < map.size() - 1; n++, node = map._rbt.successor(node))
 		std::cout << "map[" << n << "][key " << node->data.first << "] = " << map[node->data.first] << std::endl;
 	std::cout << std::endl;
 }
