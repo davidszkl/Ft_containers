@@ -240,28 +240,18 @@ public:
 	}
 
 	~RBT(){
+		show_tree(_root);
 		clear(_root);
 		_alloc.destroy(_leaf);
 		_alloc.deallocate(_leaf, 1);	
 	}
 
 	void clear(Node_ptr node) {
-		//std::cout << "node " << node << std::endl;
-		//std::cout << "leaf " << _leaf << std::endl;
-	//	std::cout << "key " << node->data.first << " ";
-	//	std::cout << "node " << node << std::endl;
+
 		if (node != _leaf) {
 			clear(node->Lchild);
 			clear(node->Rchild);
-			//std::cout << "D key " << node->data.first << " ";
-			//std::cout << "D node " << node << std::endl;
-			//delete_node(node->data.first);
-			//_alloc.destroy(node);
-			//_alloc.deallocate(node, 1);
-			//show_tree(_root);
-			if (node !=  _root)
-				simple_delete(node);
-			std::cout << std::endl;
+			simple_delete(node);
 		}
 	}
 
@@ -273,9 +263,11 @@ public:
 			else if (node == node->parent->Rchild)
 				node->parent->Rchild = _leaf;
 		}
-		std::cout << node->data.first << std::endl;
+		else
+			_root = _leaf;
 		_alloc.destroy(node);
-		//_alloc.deallocate(node, 1);
+		_alloc.deallocate(node, 1);
+		_size--;
 	}
 
 	void copy(Node_ptr node, const RBT & tree) {

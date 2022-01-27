@@ -141,19 +141,19 @@ int main()
 	std::cout << "operator[]                        \033[1;32mok\033[0m\n";
 	std::cout << "============|MODIFIERS|=============\n\n";
 	std::cout << "------------single_insert-----------\n";
-	{
-	std::string string("coucou");
-	ft::pair<iter, bool> a;
-	a = My.insert(ft::make_pair<const int, std::string>(4, string));
-	std::cout << a.second << " already exists" << std::endl;
-	a = My.insert(ft::make_pair<const int, std::string>(5, "salut"));
-	std::cout << a.second << " doesn't exist" <<std::endl;
-	a = My.insert(ft::make_pair<const int, std::string>(6, "salut"));
-	std::cout << a.second << " doesn't exist" <<std::endl;
-	a = My.insert(ft::make_pair<const int, std::string>(1, "bonjour"));
-	std::cout << a.second << " already exists" << std::endl;
-	std::cout << "insert single:                    \033[1;32mok\033[0m\n";
-	}
+
+		std::string string("coucou");
+		ft::pair<iter, bool> a;
+		a = My.insert(ft::make_pair<const int, std::string>(4, string));
+		std::cout << a.second << " already exists" << std::endl;
+		a = My.insert(ft::make_pair<const int, std::string>(5, "salut"));
+		std::cout << a.second << " doesn't exist" <<std::endl;
+		a = My.insert(ft::make_pair<const int, std::string>(6, "salut"));
+		std::cout << a.second << " doesn't exist" <<std::endl;
+		a = My.insert(ft::make_pair<const int, std::string>(1, "bonjour"));
+		std::cout << a.second << " already exists" << std::endl;
+		std::cout << "insert single:                    \033[1;32mok\033[0m\n";
+
 	std::cout << "-------------hint_insert------------\n";
 	My.insert(My.begin(), ft::make_pair<const int, std::string>(7, "f"));
 	std::cout << "My[7] = " << My[7] << std::endl;
@@ -163,57 +163,61 @@ int main()
 	std::cout << "My[8] = " << My[8] << std::endl;
 	std::cout << "hint insert :                     \033[1;32mok\033[0m\n";
 	std::cout << "-------------range_insert------------\n";
-	{
-	copy = My;
-	ft::map<int, std::string>	tmp;
-	show_map(copy);
-	show_map(tmp);
-	tmp.insert(copy.begin(), copy.end());
-	show_map(copy);
-	show_map(tmp);
-	}
+
+		copy = My;
+		ft::map<int, std::string>	tmp_map1;
+		show_map(copy);
+		show_map(tmp_map1);
+		tmp_map1.insert(copy.begin(), copy.end());
+		show_map(copy);
+		show_map(tmp_map1);
+		std::cout << "TMP BEFORE CLEAR " << std::endl;
+		tmp_map1._rbt.show_tree(tmp_map1._rbt.root());
+		std::cout << "COPY BEFORE CLEAR " << std::endl;
+		copy._rbt.show_tree(copy._rbt.root());
+
 	std::cout << "range insert :                    \033[1;32mok\033[0m\n";
 	std::cout << "-----------iterator_delete----------\n";
-	{
-	show_map(My);
-	My.erase(My.begin());
-	show_map(My);
-	std::cout << "single delete :                   \033[1;32mok\033[0m\n";
-	std::cout << "-------------key_delete-------------\n";
-	{
-	size_t tmp;
-	tmp = My.erase(1);
-	std::cout << "tmp = " << tmp << std::endl;
-	show_map(My);
-	tmp = My.erase(1);
-	std::cout << "tmp = " << tmp << std::endl;
-	show_map(My);
-	std::cout << "key delete :                      \033[1;32mok\033[0m\n";
-	std::cout << "------------range_delete------------\n";
-	My.erase(My.begin(), My.begin() + 3);
-	show_map(My);
-	std::cout << "range delete :                    \033[1;32mok\033[0m\n";
-	}
-	}
+		show_map(My);
+		My.erase(My.begin());
+		show_map(My);
+		std::cout << "single delete :                   \033[1;32mok\033[0m\n";
+		std::cout << "-------------key_delete-------------\n";
+
+		size_t tmp_size;
+		tmp_size = My.erase(1);
+		std::cout << "tmp = " << tmp_size << std::endl;
+		show_map(My);
+		tmp_size = My.erase(1);
+		std::cout << "tmp = " << tmp_size << std::endl;
+		show_map(My);
+		std::cout << "key delete :                      \033[1;32mok\033[0m\n";
+		std::cout << "------------range_delete------------\n";
+		My.erase(My.begin(), My.begin() + 3);
+		show_map(My);
+		std::cout << "range delete :                    \033[1;32mok\033[0m\n";
 	std::cout << "---------------swap-----------------\n";
-	{
-		ft::map<int, std::string>	tmp;
+		ft::map<int, std::string>	tmp_map2;
 		for (char n = 0; n < 5; n++)
-			tmp.insert(ft::make_pair<const int, std::string>(n + 1, "tmp"));
+			tmp_map2.insert(ft::make_pair<const int, std::string>(n + 1, "tmp"));
 		show_map(My);
-		show_map(tmp);
-		My.swap(tmp);
+		show_map(tmp_map2);
+		My.swap(tmp_map2);
 		show_map(My);
-		show_map(tmp);
+		show_map(tmp_map2);
 		std::cout << "swap :                            \033[1;32mok\033[0m\n";
-	}
 	std::cout << "--------------clear-----------------\n";
 	My = copy;
-	std::cout << My._rbt.root()->Lchild->Rchild->Rchild->data.first;
-	//show_map(My);
-	My.clear();
-	std::cout << std::endl;
 	show_map(My);
-
+	My.clear();
+	std::cout << "My: ";
+	show_map(My);
+	std::cout << "clear :                           \033[1;32mok\033[0m\n";
+	std::cout << "==========|OBSERVERS|==========\n" << std::endl;
+	My = copy;
+	ft::map<int, std::string>::key_compare compare_tmp = My.key_comp();
+	std::cout << compare_tmp(My.begin()->first, (My.begin() + 1)->first) << std::endl;
+	std::cout << compare_tmp((My.begin() + 1)->first, My.begin()->first) << std::endl;
+	My.value_comp();
 	return 0;
 }

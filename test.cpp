@@ -21,25 +21,36 @@ void show_map(std::map< U, V>& map) {
 	std::cout << std::endl;
 }
 
-int main ()
+// int main ()
+// {
+// 	ft::map<int, std::string>	My;
+// 	ft::map<int, std::string>	copy(My);
+// 	std::map<int, std::string>	Stl;
+// 	My.insert(ft::make_pair<int, std::string>(1, "a"));
+//     My._rbt.show_tree(My._rbt.root());
+//     std::cout << std::endl;
+// 	My.insert(ft::make_pair<int, std::string>(2, "b"));
+//     My._rbt.show_tree(My._rbt.root());
+//     std::cout << std::endl;
+// 	My.insert(ft::make_pair<int, std::string>(3, "c"));
+//     My._rbt.show_tree(My._rbt.root());
+//     std::cout << std::endl;
+//     My.insert(ft::make_pair<int, std::string>(4, "d"));
+//     My._rbt.show_tree(My._rbt.root());
+//     std::cout << std::endl;
+//     My.insert(ft::make_pair<int, std::string>(5, "e"));
+//     show_map(My);
+//     My._rbt.show_tree(My._rbt.root());
+//     return 0;
+// }
+
+int main()
 {
-	ft::map<int, std::string>	My;
-	ft::map<int, std::string>	copy(My);
-	std::map<int, std::string>	Stl;
-	My.insert(ft::make_pair<int, std::string>(1, "a"));
-    My._rbt.show_tree(My._rbt.root());
-    std::cout << std::endl;
-	My.insert(ft::make_pair<int, std::string>(2, "b"));
-    My._rbt.show_tree(My._rbt.root());
-    std::cout << std::endl;
-	My.insert(ft::make_pair<int, std::string>(3, "c"));
-    My._rbt.show_tree(My._rbt.root());
-    std::cout << std::endl;
-    My.insert(ft::make_pair<int, std::string>(4, "d"));
-    My._rbt.show_tree(My._rbt.root());
-    std::cout << std::endl;
-    My.insert(ft::make_pair<int, std::string>(5, "e"));
-    show_map(My);
-    My._rbt.show_tree(My._rbt.root());
-    return 0;
+	ft::map<int, std::string> map;
+	map.insert(ft::make_pair<int , std::string>(1, "a"));
+	ft::map<int, std::string> map2(map);
+	//ft::map<int, std::string> map3;
+	map2 = map;
+	//map3 = map;
+	return 0;
 }

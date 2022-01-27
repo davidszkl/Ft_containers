@@ -36,16 +36,17 @@ private:
 
 public:
 
-	class value_compare : public std::binary_function<value_type, value_type, bool>
-		{
-			public:
-				bool operator()(const value_type& left, const value_type& right) const {
-					return (comp(left.first, right.first));
-				}
-				value_compare(key_compare pred) : comp(pred) {}
-			protected:
-				key_compare comp;
-		};
+	class value_compare : std::binary_function<value_type, value_type, bool>
+	{
+		public:
+			value_compare(key_compare pred) : comp(pred) {}
+			bool operator() (const value_type& left, const value_type& right) const {
+				return (comp(left.first, right.first));
+			}
+		protected:
+			key_compare comp;
+	};
+	
 
 //ITERATORS DEFINITIONS=====================================================================================
 
@@ -279,8 +280,13 @@ public:
 	// 	const key_compare& comp = key_compare(),
 	// 	const allocator_type& alloc = allocator_type()):
 
-	map (const map& x) {*this = x;}
-	~map(){_rbt.clear(_rbt.root());}
+	map (const map& x) {
+		*this = x;
+	}
+
+	~map() {
+		_rbt.clear(_rbt.root());
+	}
 
 	map&	operator= (const map& rhs) {
 		_rbt	= rhs._rbt;
@@ -350,12 +356,14 @@ template <class InputIterator>
 		_rbt.delete_node((*ItFirst).first);	
 	}
 
-	void swap (map& x)	{_rbt.swap(x._rbt);}
-	void clear()		{
-		_rbt.show_tree(_rbt.root());
-		_rbt.clear(_rbt.root());
-		}
+	void swap (map& x)	{ _rbt.swap(x._rbt);}
 
+	void clear() { _rbt.clear(_rbt.root());}
+
+//-----------------------------------------<< Observers >>--------------------------------------------------	
+
+	key_compare		key_comp()		const {return _comp;}
+	value_compare	value_comp()	const {return value_compare(_comp);}
 };
 
 } //ft
