@@ -298,13 +298,13 @@ public:
 //-----------------------------------------<< Iterators >>--------------------------------------------------
 
 	iterator					begin()	 {return iterator(_rbt.min(_rbt.root()) , &_rbt);}
-	iterator					end()	 {return iterator(_rbt.max(_rbt.root()) , &_rbt);}
+	iterator					end()	 {return iterator(_rbt._leaf , &_rbt);}
 	reverse_iterator			rbegin() {return reverse_iterator(_rbt.max(_rbt.root()) , &_rbt);}
-	reverse_iterator			rend()	 {return reverse_iterator(_rbt.min(_rbt.root()) , &_rbt);}
+	reverse_iterator			rend()	 {return reverse_iterator(nullptr , &_rbt);}
 	const_iterator				begin()	 const {return const_iterator(_rbt.min(_rbt.root()) , &_rbt);}
-	const_iterator				end()	 const {return const_iterator(_rbt.max(_rbt.root()) , &_rbt);}
+	const_iterator				end()	 const {return const_iterator(_rbt._leaf + 1 , &_rbt);}
 	const_reverse_iterator		rbegin() const {return const_reverse_iterator(_rbt.max(_rbt.root()) , &_rbt);}
-	const_reverse_iterator		rend()	 const {return const_reverse_iterator(_rbt.min(_rbt.root()) , &_rbt);}
+	const_reverse_iterator		rend()	 const {return const_reverse_iterator(nullptr , &_rbt);}
 
 //-----------------------------------------<< Capacity >>---------------------------------------------------
 
@@ -364,6 +364,43 @@ template <class InputIterator>
 
 	key_compare		key_comp()		const {return _comp;}
 	value_compare	value_comp()	const {return value_compare(_comp);}
+
+//-----------------------------------------<< Operations >>-------------------------------------------------
+
+	iterator		find (const key_type& k) {
+		Node_ptr tmp = _rbt.search(_rbt.root(), k);
+		std::cout << tmp->data.first << std::endl;
+		return iterator(tmp , &_rbt);
+	}
+	const_iterator	find (const key_type& k) const {
+		return const_iterator(_rbt.search(_rbt.root(), k), &_rbt);
+	}
+
+	size_type count (const key_type& k) const {
+		return !(_rbt.search(_rbt.root(), k) == _rbt._leaf);
+	}
+
+	iterator	   lower_bound (const key_type& k) {
+		return find(k);
+	}
+
+	const_iterator lower_bound (const key_type& k) const {
+		return find(k);
+	}
+
+	iterator		upper_bound (const key_type& k) {
+		Node_ptr tmp = _rbt.search(_rbt.root(), k);
+		Node_ptr tmp2 = _rbt.successor(tmp);
+		std::cout << "key [" << tmp->data.first << "] ";
+		//tmp = _rbt.successor(tmp);
+		return iterator(tmp2, &_rbt);
+		//return iterator(_rbt.successor(_rbt.search(_rbt.root(), k)) , &_rbt);
+	}
+
+	const_iterator	upper_bound (const key_type& k) const {
+		return const_iterator(_rbt.successor(_rbt.search(_rbt.root(), k)), &_rbt);
+	}
+
 };
 
 } //ft

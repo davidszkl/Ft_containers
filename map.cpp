@@ -9,16 +9,25 @@ void show_map(ft::map<U, V> & map ) {
 		return ;
 	}
 	typename ft::RBT<ft::map<int, std::string> >::Node_ptr node =  map._rbt.min(map._rbt.root());
-	for (size_t n = 0; n < map.size() - 1; n++, node = map._rbt.successor(node))
+	for (size_t n = 0; n < map.size(); n++, node = map._rbt.successor(node))
 		std::cout << "map[" << n << "][key " << node->data.first << "] = " << map[node->data.first] << std::endl;
 	std::cout << std::endl;
 }
 
+// template <typename U, typename V >
+// void show_map(ft::map<U, V> & map ) {
+// 	if (map.empty())
+// 	{
+// 		std::cout << "empty\n";
+// 		return ;
+// 	}
+// 	map._rbt.show_tree(map._rbt.root());
+// }
+
 template <typename U, typename V >
 void show_map(std::map< U, V> & map) {
-	for (size_t n = 0; n < map.size(); n++)
+	for (size_t n = 0; n < 9; n++)
 		std::cout << "map[" << n << "] = " << map[n] << std::endl;
-	std::cout << std::endl;
 }
 
 int main()
@@ -29,23 +38,15 @@ int main()
 	std::map<int, std::string>	Stl;
 	typedef ft::map<int, std::string>::iterator iter;
 	typedef ft::map<int, std::string>::reverse_iterator Riter;
+	//typedef std::map<int, std::string>::reverse_iterator Stl_Riter;
 
 	My.insert(ft::make_pair<int, std::string>(1, "a"));
-	
-	std::cout << "SIZE " << My.size() << std::endl;
 	My.insert(ft::make_pair<int, std::string>(2, "b"));
-		std::cout << "SIZE " << My.size() << std::endl;
-
 	My.insert(ft::make_pair<int, std::string>(3, "c"));
-		std::cout << "SIZE " << My.size() << std::endl;
-
 	My.insert(ft::make_pair<int, std::string>(4, "d"));
 	My.insert(ft::make_pair<int, std::string>(-1, "c"));
 	My.insert(ft::make_pair<int, std::string>(5, "c"));
-
 	My.insert(ft::make_pair<int, std::string>(6, "c"));
-
-	std::cout << "SIZE " << My.size() << std::endl;
 
 	show_map(My);
 	show_map(copy);
@@ -85,6 +86,7 @@ int main()
 	std::cout << "-----------INCREMENTATION-----------\n";
 	std::cout << "pre-increment:  " <<  (*(++it1)).first << std::endl;
 	std::cout << "post-increment: " << (*(it2++)).first << std::endl;
+	
 	std::cout << "compare:                          ";
 	if ((*it2).first != (*(it1)).first)
 		std::cout << "s\033[1;31mko\033[0m\n";
@@ -101,6 +103,9 @@ int main()
 	std::cout << "-------------BEGIN/END--------------\n";
 	it1 = My.begin();
 	it2 = My.end();
+	
+	show_map(My);
+
 	std::cout << (*it1).first << std::endl;
 	std::cout << (*it2).first << std::endl;
 	std::cout << "begin:                            \033[1;32mok\033[0m\n";
@@ -108,9 +113,22 @@ int main()
 	Rit1 = My.rbegin();
 	Rit2 = My.rend();
 	std::cout << (*Rit1).first << std::endl;
-	std::cout << (*Rit2).first << std::endl;
+	//std::cout << (*Rit2).first << std::endl;
 	std::cout << "rbegin:                           \033[1;32mok\033[0m\n";
 	std::cout << "rend:                             \033[1;32mok\033[0m\n";
+
+	while (it1 != it2)
+	{
+		std::cout << it1->first << "\n";	
+		it1++;
+	}
+	
+	std::cout << "coucou" << Rit1->first << std::endl;
+	while (Rit1 != Rit2)
+	{
+		std::cout << Rit1->first << "\n";
+		Rit1++;
+	}
 
 	std::cout << "============|CAPACITY|==============\n";
 	std::cout << "size     = " << My.size() << "                      \033[1;32mok\033[0m\n";
@@ -213,11 +231,81 @@ int main()
 	std::cout << "My: ";
 	show_map(My);
 	std::cout << "clear :                           \033[1;32mok\033[0m\n";
-	std::cout << "==========|OBSERVERS|==========\n" << std::endl;
+	std::cout << "=============|OBSERVERS|============\n";
 	My = copy;
 	ft::map<int, std::string>::key_compare compare_tmp = My.key_comp();
 	std::cout << compare_tmp(My.begin()->first, (My.begin() + 1)->first) << std::endl;
 	std::cout << compare_tmp((My.begin() + 1)->first, My.begin()->first) << std::endl;
-	My.value_comp();
+	ft::map<int, std::string>::value_compare compare_tmp2 = My.value_comp();
+	std::cout << compare_tmp2(*My.begin(), *(My.begin() + 1)) << std::endl;
+	std::cout << compare_tmp2(*(My.begin() + 1) , *My.begin()) << std::endl;
+	std::cout << "key_compare :                     \033[1;32mok\033[0m\n";
+	std::cout << "value_compare :                   \033[1;32mok\033[0m\n";
+	std::cout << "============|OPERATIONS|============\n";
+	std::cout << "--------------Search----------------\n";
+	show_map(My);
+	show_map(Stl);
+	std::cout << "Search key 3 " << std::endl;
+	std::cout << "key = " << My.find(3)->first << std::endl;
+	std::cout << "Search non-existent key " << std::endl;
+	std::cout << "key = " << My.find(100)->first << std::endl;
+	std::cout << "Search key 3 " << std::endl;
+	std::cout << "key = " << Stl.find(3)->first << std::endl;
+	std::cout << "Search non-existent key " << std::endl;
+	std::cout << "key = " << Stl.find(100)->first << std::endl;
+	std::cout << "search :                         \033[1;32mok\033[0m\n";
+	std::cout << "--------------Count----------------\n";
+	std::cout << "Count existent:     " << My.count(1) << std::endl;
+	std::cout << "Count non-existent: " << My.count(18) << std::endl;
+	std::cout << "count :                          \033[1;32mok\033[0m\n";
+	std::cout << "-----------Lower_bound-------------\n";
+
+	Stl.clear();
+	Stl.insert(std::make_pair<const int, std::string>(0, "c"));
+	Stl.insert(std::make_pair<const int, std::string>(1, "a"));
+	Stl.insert(std::make_pair<const int, std::string>(2, "b"));
+	Stl.insert(std::make_pair<const int, std::string>(3, "c"));
+	Stl.insert(std::make_pair<const int, std::string>(4, "d"));
+	Stl.insert(std::make_pair<const int, std::string>(5, "c"));
+	Stl.insert(std::make_pair<const int, std::string>(6, "c"));
+	Stl.insert(std::make_pair<const int, std::string>(7, "f"));
+	Stl.insert(std::make_pair<const int, std::string>(8, "g"));
+	show_map(Stl);
+	show_map(My);
+	std::cout << "Lower bounds:\nStl:\n";
+	std::cout << "at min     : " << Stl.lower_bound(0)->first << std::endl;
+	std::cout << "at min + 1 : " << Stl.lower_bound(1)->first << std::endl;
+	std::cout << "at middle  : " << Stl.lower_bound(5)->first << std::endl;
+	std::cout << "at end - 1 : " << Stl.lower_bound(7)->first << std::endl;
+	std::cout << "at end     : " << Stl.lower_bound(8)->first << std::endl;
+	std::cout << "overflow   : " << Stl.lower_bound(15)->first << std::endl;
+	std::cout << "underflow  : " << Stl.lower_bound(-15)->first << std::endl;
+	std::cout << "My:\n";
+	std::cout << "at min     : " << My.lower_bound(-1)->first << std::endl;
+	std::cout << "at min     : " << My.lower_bound(0)->first << std::endl;
+	std::cout << "at min + 1 : " << My.lower_bound(1)->first << std::endl;
+	std::cout << "at middle  : " << My.lower_bound(5)->first << std::endl;
+	std::cout << "at end - 1 : " << My.lower_bound(7)->first << std::endl;
+	std::cout << "at end     : " << My.lower_bound(8)->first << std::endl;
+	std::cout << "overflow   : " << My.lower_bound(15)->first << std::endl;
+	std::cout << "underflow  : " << My.lower_bound(-15)->first << std::endl;
+
+	std::cout << "Upper bounds:\nStl:\n";
+	std::cout << "at min     : " << Stl.upper_bound(0)->first << std::endl;
+	std::cout << "at min + 1 : " << Stl.upper_bound(1)->first << std::endl;
+	std::cout << "at middle  : " << Stl.upper_bound(5)->first << std::endl;
+	std::cout << "at end - 1 : " << Stl.upper_bound(7)->first << std::endl;
+	std::cout << "at end     : " << Stl.upper_bound(8)->first << std::endl;
+
+	show_map(My);
+	//std::cout << My.find(0)->first << std::endl;
+	std::cout << "My:\n";
+	std::cout << "at min     : " << My.upper_bound(0)->first << std::endl;
+	std::cout << "at min + 1 : " << My.upper_bound(-1)->first << std::endl;
+	std::cout << "at min + 1 : " << My.upper_bound(1)->first << std::endl;
+	std::cout << "at middle  : " << My.upper_bound(5)->first << std::endl;
+	std::cout << "at end - 1 : " << My.upper_bound(7)->first << std::endl;
+	std::cout << "at end     : " << My.upper_bound(8)->first << std::endl;
 	return 0;
+
 }

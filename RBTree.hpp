@@ -380,7 +380,7 @@ public:
 			fix_delete(B);
 	}
 
-	Node_ptr search(Node_ptr start, key_type key) {
+	Node_ptr search(Node_ptr start, key_type key) const {
 		if (start == _leaf || key == start->data.first)
 			return start;
 		if (key < start->data.first)
@@ -401,28 +401,81 @@ public:
 	}
 
 	Node_ptr successor(Node_ptr start) {
-		if (start->Rchild != _leaf)
+		if (start == max(_root))
+			return _leaf;
+		else if (!start)
+			return min(_root);
+		else if (start->Rchild != _leaf)
 			return min(start->Rchild);
-		Node_ptr rval = start->parent;
-		while (rval && start == rval->Rchild)
+		else
 		{
-			start = rval;
-			rval = rval->parent;
+			Node_ptr rval = start->parent;
+			while (rval && start == rval->Rchild)
+			{
+				start = rval;
+				rval = rval->parent;
+			}
+			return rval;
 		}
-		return rval;
+	}
+
+	Node_ptr successor(Node_ptr start) const {
+		if (start == max(_root))
+			return _leaf;
+		else if (!start)
+			return min(_root);
+		else if (start->Rchild != _leaf)
+			return min(start->Rchild);
+		else
+		{
+			Node_ptr rval = start->parent;
+			while (rval && start == rval->Rchild)
+			{
+				start = rval;
+				rval = rval->parent;
+			}
+			return rval;
+		}
 	}
 
 	Node_ptr predecessor(Node_ptr start) {
-		if (start->Lchild != _leaf)
+		if (start == _leaf)
+			return max(_root);
+		else if (start == min(_root))
+			return nullptr;
+		else if (start->Lchild != _leaf)
 			return max(start->Lchild);
-		Node_ptr rval = start->parent;
-		while (rval && start == rval->Lchild)
+		else
 		{
-			start = rval;
-			rval = rval->parent;
+			Node_ptr rval = start->parent;
+			while (rval && start == rval->Lchild)
+			{
+				start = rval;
+				rval = rval->parent;
+			}
+			return rval;
 		}
-		return rval;
 	}
+
+	Node_ptr predecessor(Node_ptr start) const {
+		if (start == _leaf)
+			return max(_root);
+		else if (start == min(_root))
+			return nullptr;
+		else if (start->Lchild != _leaf)
+			return max(start->Lchild);
+		else
+		{
+			Node_ptr rval = start->parent;
+			while (rval && start == rval->Lchild)
+			{
+				start = rval;
+				rval = rval->parent;
+			}
+			return rval;
+		}
+	}
+	
 
 	void in_order(Node_ptr start) {
 			if (start != _leaf) {
