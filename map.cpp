@@ -14,16 +14,6 @@ void show_map(ft::map<U, V> & map ) {
 	std::cout << std::endl;
 }
 
-// template <typename U, typename V >
-// void show_map(ft::map<U, V> & map ) {
-// 	if (map.empty())
-// 	{
-// 		std::cout << "empty\n";
-// 		return ;
-// 	}
-// 	map._rbt.show_tree(map._rbt.root());
-// }
-
 template <typename U, typename V >
 void show_map(std::map< U, V> & map) {
 	for (size_t n = 0; n < 9; n++)
@@ -117,20 +107,8 @@ int main()
 	std::cout << "rbegin:                           \033[1;32mok\033[0m\n";
 	std::cout << "rend:                             \033[1;32mok\033[0m\n";
 
-	while (it1 != it2)
-	{
-		std::cout << it1->first << "\n";	
-		it1++;
-	}
-	
-	std::cout << "coucou" << Rit1->first << std::endl;
-	while (Rit1 != Rit2)
-	{
-		std::cout << Rit1->first << "\n";
-		Rit1++;
-	}
-
 	std::cout << "============|CAPACITY|==============\n";
+
 	std::cout << "size     = " << My.size() << "                      \033[1;32mok\033[0m\n";
 	std::cout << "max_size = " << My.max_size() << "     \033[1;32mok\033[0m\n";
 	std::cout << "empty    = ";
@@ -139,6 +117,7 @@ int main()
 
 	std::cout << "==========|ELEMENT_ACCESS|==========\n" << std::endl;
 	std::cout << "-------------operator[]-------------\n";
+
 	Stl.insert(std::make_pair<const int, std::string>(1, "a"));
 	Stl.insert(std::make_pair<const int, std::string>(2, "b"));
 	Stl.insert(std::make_pair<const int, std::string>(3, "c"));
@@ -157,22 +136,24 @@ int main()
 	std::cout << "stl[4] (exists now) = " << Stl[4] << std::endl;
 	std::cout << "stl[-1] = " << Stl[-1] << std::endl;
 	std::cout << "operator[]                        \033[1;32mok\033[0m\n";
+	 
 	std::cout << "============|MODIFIERS|=============\n\n";
 	std::cout << "------------single_insert-----------\n";
 
-		std::string string("coucou");
-		ft::pair<iter, bool> a;
-		a = My.insert(ft::make_pair<const int, std::string>(4, string));
-		std::cout << a.second << " already exists" << std::endl;
-		a = My.insert(ft::make_pair<const int, std::string>(5, "salut"));
-		std::cout << a.second << " doesn't exist" <<std::endl;
-		a = My.insert(ft::make_pair<const int, std::string>(6, "salut"));
-		std::cout << a.second << " doesn't exist" <<std::endl;
-		a = My.insert(ft::make_pair<const int, std::string>(1, "bonjour"));
-		std::cout << a.second << " already exists" << std::endl;
-		std::cout << "insert single:                    \033[1;32mok\033[0m\n";
+	std::string string("coucou");
+	ft::pair<iter, bool> a;
+	a = My.insert(ft::make_pair<const int, std::string>(4, string));
+	std::cout << a.second << " already exists" << std::endl;
+	a = My.insert(ft::make_pair<const int, std::string>(5, "salut"));
+	std::cout << a.second << " doesn't exist" <<std::endl;
+	a = My.insert(ft::make_pair<const int, std::string>(6, "salut"));
+	std::cout << a.second << " doesn't exist" <<std::endl;
+	a = My.insert(ft::make_pair<const int, std::string>(1, "bonjour"));
+	std::cout << a.second << " already exists" << std::endl;
+	std::cout << "insert single:                    \033[1;32mok\033[0m\n";
 
 	std::cout << "-------------hint_insert------------\n";
+
 	My.insert(My.begin(), ft::make_pair<const int, std::string>(7, "f"));
 	std::cout << "My[7] = " << My[7] << std::endl;
 	My.insert(My.begin(), ft::make_pair<const int, std::string>(7, "z"));
@@ -180,6 +161,7 @@ int main()
 	My.insert(My.begin(), ft::make_pair<const int, std::string>(8, "g"));
 	std::cout << "My[8] = " << My[8] << std::endl;
 	std::cout << "hint insert :                     \033[1;32mok\033[0m\n";
+
 	std::cout << "-------------range_insert------------\n";
 
 		copy = My;
@@ -195,43 +177,54 @@ int main()
 		copy._rbt.show_tree(copy._rbt.root());
 
 	std::cout << "range insert :                    \033[1;32mok\033[0m\n";
+	 
 	std::cout << "-----------iterator_delete----------\n";
-		show_map(My);
-		My.erase(My.begin());
-		show_map(My);
-		std::cout << "single delete :                   \033[1;32mok\033[0m\n";
-		std::cout << "-------------key_delete-------------\n";
+	 
+	show_map(My);
+	My.erase(My.begin());
+	show_map(My);
+	std::cout << "single delete :                   \033[1;32mok\033[0m\n";
+	 
+	std::cout << "-------------key_delete-------------\n";
 
-		size_t tmp_size;
-		tmp_size = My.erase(1);
-		std::cout << "tmp = " << tmp_size << std::endl;
-		show_map(My);
-		tmp_size = My.erase(1);
-		std::cout << "tmp = " << tmp_size << std::endl;
-		show_map(My);
-		std::cout << "key delete :                      \033[1;32mok\033[0m\n";
-		std::cout << "------------range_delete------------\n";
-		My.erase(My.begin(), My.begin() + 3);
-		show_map(My);
-		std::cout << "range delete :                    \033[1;32mok\033[0m\n";
+	size_t tmp_size;
+	tmp_size = My.erase(1);
+	std::cout << "tmp = " << tmp_size << std::endl;
+	show_map(My);
+	tmp_size = My.erase(1);
+	std::cout << "tmp = " << tmp_size << std::endl;
+	show_map(My);
+	std::cout << "key delete :                      \033[1;32mok\033[0m\n";
+
+	std::cout << "------------range_delete------------\n";
+	 
+	My.erase(My.begin(), My.begin() + 3);
+	show_map(My);
+	std::cout << "range delete :                    \033[1;32mok\033[0m\n";
+
 	std::cout << "---------------swap-----------------\n";
-		ft::map<int, std::string>	tmp_map2;
-		for (char n = 0; n < 5; n++)
-			tmp_map2.insert(ft::make_pair<const int, std::string>(n + 1, "tmp"));
-		show_map(My);
-		show_map(tmp_map2);
-		My.swap(tmp_map2);
-		show_map(My);
-		show_map(tmp_map2);
-		std::cout << "swap :                            \033[1;32mok\033[0m\n";
+
+	ft::map<int, std::string>	tmp_map2;
+	for (char n = 0; n < 5; n++)
+		tmp_map2.insert(ft::make_pair<const int, std::string>(n + 1, "tmp"));
+	show_map(My);
+	show_map(tmp_map2);
+	My.swap(tmp_map2);
+	show_map(My);
+	show_map(tmp_map2);
+	std::cout << "swap :                            \033[1;32mok\033[0m\n";
+
 	std::cout << "--------------clear-----------------\n";
+	
 	My = copy;
 	show_map(My);
 	My.clear();
 	std::cout << "My: ";
 	show_map(My);
 	std::cout << "clear :                           \033[1;32mok\033[0m\n";
+
 	std::cout << "=============|OBSERVERS|============\n";
+
 	My = copy;
 	ft::map<int, std::string>::key_compare compare_tmp = My.key_comp();
 	std::cout << compare_tmp(My.begin()->first, (My.begin() + 1)->first) << std::endl;
@@ -241,8 +234,10 @@ int main()
 	std::cout << compare_tmp2(*(My.begin() + 1) , *My.begin()) << std::endl;
 	std::cout << "key_compare :                     \033[1;32mok\033[0m\n";
 	std::cout << "value_compare :                   \033[1;32mok\033[0m\n";
+
 	std::cout << "============|OPERATIONS|============\n";
 	std::cout << "--------------Search----------------\n";
+
 	show_map(My);
 	show_map(Stl);
 	std::cout << "Search key 3 " << std::endl;
@@ -258,6 +253,7 @@ int main()
 	std::cout << "Count existent:     " << My.count(1) << std::endl;
 	std::cout << "Count non-existent: " << My.count(18) << std::endl;
 	std::cout << "count :                          \033[1;32mok\033[0m\n";
+
 	std::cout << "-----------Lower_bound-------------\n";
 
 	Stl.clear();
@@ -270,8 +266,8 @@ int main()
 	Stl.insert(std::make_pair<const int, std::string>(6, "c"));
 	Stl.insert(std::make_pair<const int, std::string>(7, "f"));
 	Stl.insert(std::make_pair<const int, std::string>(8, "g"));
-	show_map(Stl);
-	show_map(My);
+	//show_map(Stl);
+	//show_map(My);
 	std::cout << "Lower bounds:\nStl:\n";
 	std::cout << "at min     : " << Stl.lower_bound(0)->first << std::endl;
 	std::cout << "at min + 1 : " << Stl.lower_bound(1)->first << std::endl;
@@ -280,15 +276,18 @@ int main()
 	std::cout << "at end     : " << Stl.lower_bound(8)->first << std::endl;
 	std::cout << "overflow   : " << Stl.lower_bound(15)->first << std::endl;
 	std::cout << "underflow  : " << Stl.lower_bound(-15)->first << std::endl;
+
 	std::cout << "My:\n";
 	std::cout << "at min     : " << My.lower_bound(-1)->first << std::endl;
-	std::cout << "at min     : " << My.lower_bound(0)->first << std::endl;
+	std::cout << "at nan     : " << My.lower_bound(0)->first << std::endl;
 	std::cout << "at min + 1 : " << My.lower_bound(1)->first << std::endl;
 	std::cout << "at middle  : " << My.lower_bound(5)->first << std::endl;
 	std::cout << "at end - 1 : " << My.lower_bound(7)->first << std::endl;
 	std::cout << "at end     : " << My.lower_bound(8)->first << std::endl;
 	std::cout << "overflow   : " << My.lower_bound(15)->first << std::endl;
 	std::cout << "underflow  : " << My.lower_bound(-15)->first << std::endl;
+	std::cout << "lower_bounds :                   \033[1;32mok\033[0m\n";
+	std::cout << "-----------Upper_bound-------------\n";
 
 	std::cout << "Upper bounds:\nStl:\n";
 	std::cout << "at min     : " << Stl.upper_bound(0)->first << std::endl;
@@ -296,16 +295,37 @@ int main()
 	std::cout << "at middle  : " << Stl.upper_bound(5)->first << std::endl;
 	std::cout << "at end - 1 : " << Stl.upper_bound(7)->first << std::endl;
 	std::cout << "at end     : " << Stl.upper_bound(8)->first << std::endl;
+	std::cout << "overflow   : " << Stl.upper_bound(15)->first << std::endl;
+	std::cout << "underflow  : " << Stl.upper_bound(-15)->first << std::endl;
 
-	show_map(My);
-	//std::cout << My.find(0)->first << std::endl;
 	std::cout << "My:\n";
-	std::cout << "at min     : " << My.upper_bound(0)->first << std::endl;
-	std::cout << "at min + 1 : " << My.upper_bound(-1)->first << std::endl;
+	std::cout << "at nan     : " << My.upper_bound(0)->first << std::endl;
+	std::cout << "at min     : " << My.upper_bound(-1)->first << std::endl;
 	std::cout << "at min + 1 : " << My.upper_bound(1)->first << std::endl;
 	std::cout << "at middle  : " << My.upper_bound(5)->first << std::endl;
 	std::cout << "at end - 1 : " << My.upper_bound(7)->first << std::endl;
 	std::cout << "at end     : " << My.upper_bound(8)->first << std::endl;
+	std::cout << "overflow   : " << My.upper_bound(15)->first << std::endl;
+	std::cout << "underflow  : " << My.upper_bound(-15)->first << std::endl;
+	std::cout << "Upper_bounds :                   \033[1;32mok\033[0m\n";
+
+	std::cout << "-----------equal_range-------------\n";
+	ft::pair<iter, iter>Range1(My.equal_range(3));
+	ft::pair<iter, iter>Range2(My.equal_range(15));
+	while (Range1.first != Range1.second)
+	{
+		std::cout << "key " << Range1.first->first << std::endl;
+		Range1.first++;
+	}
+	while (Range2.first != Range2.second)
+	{
+		std::cout << "key " << Range1.first->first << std::endl;
+		Range1.first++;
+	}
+	std::cout << "Range 2: empty" << std::endl;
+	std::cout << "equal_range :                    \033[1;32mok\033[0m\n";
+	std::cout << "-----------equal_range-------------\n";
+
 	return 0;
 
 }

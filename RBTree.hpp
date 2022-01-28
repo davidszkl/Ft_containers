@@ -401,7 +401,9 @@ public:
 	}
 
 	Node_ptr successor(Node_ptr start) {
-		if (start == max(_root))
+		if (start == _leaf)
+			return start;
+		else if (start == max(_root))
 			return _leaf;
 		else if (!start)
 			return min(_root);
@@ -420,7 +422,9 @@ public:
 	}
 
 	Node_ptr successor(Node_ptr start) const {
-		if (start == max(_root))
+		if (start == _leaf)
+			return start;
+		else if (start == max(_root))
 			return _leaf;
 		else if (!start)
 			return min(_root);
@@ -439,7 +443,9 @@ public:
 	}
 
 	Node_ptr predecessor(Node_ptr start) {
-		if (start == _leaf)
+		if (!start)
+			return start;
+		else if (start == _leaf)
 			return max(_root);
 		else if (start == min(_root))
 			return nullptr;
@@ -458,6 +464,8 @@ public:
 	}
 
 	Node_ptr predecessor(Node_ptr start) const {
+		if (!start)
+			return start;
 		if (start == _leaf)
 			return max(_root);
 		else if (start == min(_root))

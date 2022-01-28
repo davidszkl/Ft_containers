@@ -368,9 +368,7 @@ template <class InputIterator>
 //-----------------------------------------<< Operations >>-------------------------------------------------
 
 	iterator		find (const key_type& k) {
-		Node_ptr tmp = _rbt.search(_rbt.root(), k);
-		std::cout << tmp->data.first << std::endl;
-		return iterator(tmp , &_rbt);
+		return iterator(_rbt.search(_rbt.root(), k) , &_rbt);
 	}
 	const_iterator	find (const key_type& k) const {
 		return const_iterator(_rbt.search(_rbt.root(), k), &_rbt);
@@ -389,17 +387,24 @@ template <class InputIterator>
 	}
 
 	iterator		upper_bound (const key_type& k) {
-		Node_ptr tmp = _rbt.search(_rbt.root(), k);
-		Node_ptr tmp2 = _rbt.successor(tmp);
-		std::cout << "key [" << tmp->data.first << "] ";
-		//tmp = _rbt.successor(tmp);
-		return iterator(tmp2, &_rbt);
-		//return iterator(_rbt.successor(_rbt.search(_rbt.root(), k)) , &_rbt);
+		return iterator(_rbt.successor(_rbt.search(_rbt.root(), k)) , &_rbt);
 	}
 
 	const_iterator	upper_bound (const key_type& k) const {
 		return const_iterator(_rbt.successor(_rbt.search(_rbt.root(), k)), &_rbt);
 	}
+
+	pair<iterator,iterator>             equal_range (const key_type& k) {
+		return ft::make_pair<iterator, iterator>(lower_bound(k), upper_bound(k));
+	}
+
+	pair<const_iterator,const_iterator> equal_range (const key_type& k) const {
+		return ft::make_pair<const_iterator, const_iterator>(lower_bound(k), upper_bound(k));
+	}
+
+//-----------------------------------------<< Allocator >>-------------------------------------------------
+
+	allocator_type get_allocator() const {return _alloc;}
 
 };
 
