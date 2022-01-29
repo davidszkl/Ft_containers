@@ -275,10 +275,12 @@ public:
 				const allocator_type& alloc = allocator_type()): _rbt(alloc), _comp(comp), _alloc(alloc) {
 	}
 
-	// template <class InputIterator>
-	// map (InputIterator first, InputIterator last,
-	// 	const key_compare& comp = key_compare(),
-	// 	const allocator_type& alloc = allocator_type()):
+	template <class InputIterator>
+	map (InputIterator first, InputIterator last,
+		const key_compare& comp = key_compare(),
+		const allocator_type& alloc = allocator_type()): _comp(comp), _alloc(alloc) {
+			insert(first, last);
+		}
 
 	map (const map& x) {
 		*this = x;
@@ -336,8 +338,10 @@ iterator insert (iterator position, const value_type& val) {
 template <class InputIterator>
 	void insert (InputIterator first, InputIterator last) {
 		while (first != last)
-			_rbt.insert(*first++);
-		_rbt.insert(*first);
+		{
+			_rbt.insert(*first);
+			first++;
+		}
 	}
 
 	void erase (iterator position) {
@@ -353,7 +357,6 @@ template <class InputIterator>
 	void erase (iterator ItFirst, iterator last) {
 		while (ItFirst != last)
 			_rbt.delete_node((*ItFirst++).first);
-		_rbt.delete_node((*ItFirst).first);	
 	}
 
 	void swap (map& x)	{ _rbt.swap(x._rbt);}

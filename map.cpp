@@ -1,6 +1,7 @@
 #include "map.hpp"
 #include <map>
 #include <stdlib.h>
+#include <chrono>
 template <typename U, typename V >
 void show_map(ft::map<U, V> & map ) {
 	if (map.empty())
@@ -38,9 +39,11 @@ int main()
 	My.insert(ft::make_pair<int, std::string>(5, "c"));
 	My.insert(ft::make_pair<int, std::string>(6, "c"));
 
+	ft::map<int, std::string>	rangeConstruct(My.begin(), My.end());
 	show_map(My);
 	show_map(copy);
 	show_map(Stl);
+	show_map(rangeConstruct);
 
 	std::cout	<< "==========|MAP_ITERATOR|============\n";
 	std::cout	<< "\n-----------CONSTRUCTORS-------------\n";
@@ -326,6 +329,319 @@ int main()
 	std::cout << "equal_range :                    \033[1;32mok\033[0m\n";
 	std::cout << "-----------equal_range-------------\n";
 
+	std::cout << "==============|TIMERS|=============\n\n";
+	using namespace std::chrono;
+	high_resolution_clock				clock;
+	high_resolution_clock::time_point	t1;
+	high_resolution_clock::time_point	t2;
+	microseconds::rep					time_span1;
+	microseconds::rep					time_span2;
+
+	ft::map<int, std::string>	My_big;
+	std::map<int, std::string>	Stl_big;
+	ft::map<int, std::string>	My2_big;
+	std::map<int, std::string>	Stl2_big;
+	std::cout << "============|INSERTIONS|===========\n\n";
+
+	std::cout << "insert 10000 'a':\n----------------" << std::endl;
+
+	t1 = clock.now();
+	for (size_t n = 0; n < 10000; n++)
+		My_big.insert(ft::make_pair<const int, std::string>(n, "a"));
+	t2 = clock.now();
+	time_span1 = duration_cast<microseconds>(t2 - t1).count();
+	t1 = clock.now();
+	for (size_t n = 0; n < 10000; n++)
+		Stl_big.insert(std::make_pair<const int, std::string>(n, "a"));
+	t2 = clock.now();
+	time_span2 = duration_cast<microseconds>(t2 - t1).count();
+	std::cout << "my_time : " << time_span1 << "ms\n";
+	std::cout << "stl_time: " << time_span2 << "ms\n" << std::endl;
+	if (time_span1 > (time_span2 * 20))
+		std::cout << "big_insert :                     \033[1;31mko\033[0m\n";
+	else
+		std::cout << "big_insert :                     \033[1;32mok\033[0m\n";
+
+	std::cout << "insert 1 at 0, 5000, 10000" << std::endl;
+	std::cout << "-------------------------" << std::endl;
+
+	My2_big  = My_big;
+	Stl2_big = Stl_big;
+	t1 = clock.now();
+	My_big.insert(ft::make_pair<const int, std::string>(0, "a"));
+	t2 = clock.now();
+	time_span1 = duration_cast<microseconds>(t2 - t1).count();
+	t1 = clock.now();
+	Stl_big.insert(std::make_pair<const int, std::string>(0, "a"));
+	t2 = clock.now();
+	time_span2 = duration_cast<microseconds>(t2 - t1).count();
+	std::cout << "my_time : " << time_span1 << "ms\n";
+	std::cout << "stl_time: " << time_span2 << "ms\n" << std::endl;
+	if (time_span1 > (time_span2 * 20))
+		std::cout << "insert at 0:                     \033[1;31mko\033[0m\n";
+	else
+		std::cout << "insert at 0:                     \033[1;32mok\033[0m\n";
+	std::cout << "--------------" << std::endl;
+	
+	t1 = clock.now();
+	My_big.insert(ft::make_pair<const int, std::string>(5000, "a"));
+	t2 = clock.now();
+	time_span1 = duration_cast<microseconds>(t2 - t1).count();
+	t1 = clock.now();
+	Stl_big.insert(std::make_pair<const int, std::string>(5000, "a"));
+	t2 = clock.now();
+	time_span2 = duration_cast<microseconds>(t2 - t1).count();
+	std::cout << "my_time : " << time_span1 << "ms\n";
+	std::cout << "stl_time: " << time_span2 << "ms\n" << std::endl;
+	if (time_span1 > (time_span2 * 20))
+		std::cout << "insert at 5000:                  \033[1;31mko\033[0m\n";
+	else
+		std::cout << "insert at 5000:                  \033[1;32mok\033[0m\n";
+	std::cout << "---------------" << std::endl;
+
+	t1 = clock.now();
+	My_big.insert(ft::make_pair<const int, std::string>(10000, "a"));
+	t2 = clock.now();
+	time_span1 = duration_cast<microseconds>(t2 - t1).count();
+	t1 = clock.now();
+	Stl_big.insert(std::make_pair<const int, std::string>(10000, "a"));
+	t2 = clock.now();
+	time_span2 = duration_cast<microseconds>(t2 - t1).count();
+	std::cout << "my_time : " << time_span1 << "ms\n";
+	std::cout << "stl_time: " << time_span2 << "ms\n" << std::endl;
+	if (time_span1 > (time_span2 * 20))
+		std::cout << "insert at 10000:                 \033[1;31mko\033[0m\n";
+	else
+		std::cout << "insert at 10000:                 \033[1;32mok\033[0m\n";
+	std::cout << "----------------" << std::endl << std::endl;
+
+	std::cout << "insert range1 into range 2:" << std::endl;
+	std::cout << "---------------------------" << std::endl;
+	t1 = clock.now();
+	My2_big.clear();
+	My2_big.insert(My_big.begin(), My_big.end());
+	t2 = clock.now();
+	time_span1 = duration_cast<microseconds>(t2 - t1).count();
+	t1 = clock.now();
+	Stl2_big.clear();
+	Stl2_big.insert(Stl_big.begin(), Stl_big.end());
+	t2 = clock.now();
+	time_span2 = duration_cast<microseconds>(t2 - t1).count();
+	std::cout << "my_time : " << time_span1 << "ms\n";
+	std::cout << "stl_time: " << time_span2 << "ms\n" << std::endl;
+	if (time_span1 > (time_span2 * 20))
+		std::cout << "clear + range_insert:            \033[1;31mko\033[0m\n";
+	else
+		std::cout << "clear + range_insert:            \033[1;32mok\033[0m\n";
+	std::cout << "---------------------" << std::endl << std::endl;
+
+	std::cout << "==============|ERASES|=============\n\n";
+
+	std::cout << "erase 1 at 0, 5000, 9998 (key):" << std::endl;
+	std::cout << "-------------------------------" << std::endl;
+	t1 = clock.now();
+	My2_big.erase(0);
+	t2 = clock.now();
+	time_span1 = duration_cast<microseconds>(t2 - t1).count();
+	t1 = clock.now();
+	Stl2_big.erase(0);
+	t2 = clock.now();
+	time_span2 = duration_cast<microseconds>(t2 - t1).count();
+	std::cout << "my_time : " << time_span1 << "ms\n";
+	std::cout << "stl_time: " << time_span2 << "ms\n" << std::endl;
+	if (time_span1 > (time_span2 * 20))
+		std::cout << "erase at 0:                      \033[1;31mko\033[0m\n";
+	else
+		std::cout << "erase at 0:                      \033[1;32mok\033[0m\n";
+	std::cout << "-----------" << std::endl;
+
+	t1 = clock.now();
+	My2_big.erase(5000);
+	t2 = clock.now();
+	time_span1 = duration_cast<microseconds>(t2 - t1).count();
+	t1 = clock.now();
+	Stl2_big.erase(5000);
+	t2 = clock.now();
+	time_span2 = duration_cast<microseconds>(t2 - t1).count();
+	std::cout << "my_time : " << time_span1 << "ms\n";
+	std::cout << "stl_time: " << time_span2 << "ms\n" << std::endl;
+	if (time_span1 > (time_span2 * 20))
+		std::cout << "erase at 5000:                   \033[1;31mko\033[0m\n";
+	else
+		std::cout << "erase at 5000:                   \033[1;32mok\033[0m\n";
+	std::cout << "--------------" << std::endl;
+
+	t1 = clock.now();
+	My2_big.erase(9998);
+	t2 = clock.now();
+	time_span1 = duration_cast<microseconds>(t2 - t1).count();
+	t1 = clock.now();
+	Stl2_big.erase(9998);
+	t2 = clock.now();
+	time_span2 = duration_cast<microseconds>(t2 - t1).count();
+	std::cout << "my_time : " << time_span1 << "ms\n";
+	std::cout << "stl_time: " << time_span2 << "ms\n" << std::endl;
+	if (time_span1 > (time_span2 * 20))
+		std::cout << "erase at 9998:                   \033[1;31mko\033[0m\n";
+	else
+		std::cout << "erase at 9998:                   \033[1;32mok\033[0m\n";
+	std::cout << "--------------" << std::endl;
+
+	std::cout << "erase 1 at 0, 5000, 9998(iterator):" << std::endl;
+	std::cout << "-----------------------------------" << std::endl;
+	t1 = clock.now();
+	My_big.erase(My_big.begin());
+	t2 = clock.now();
+	time_span1 = duration_cast<microseconds>(t2 - t1).count();
+	t1 = clock.now();
+	Stl_big.erase(Stl_big.begin());
+	t2 = clock.now();
+	time_span2 = duration_cast<microseconds>(t2 - t1).count();
+	std::cout << "my_time : " << time_span1 << "ms\n";
+	std::cout << "stl_time: " << time_span2 << "ms\n" << std::endl;
+	if (time_span1 > (time_span2 * 20))
+		std::cout << "erase at 0:                      \033[1;31mko\033[0m\n";
+	else
+		std::cout << "erase at 0:                      \033[1;32mok\033[0m\n";
+	std::cout << "-----------" << std::endl;
+
+	t1 = clock.now();
+	My_big.erase(My_big.find(5000));
+	t2 = clock.now();
+	time_span1 = duration_cast<microseconds>(t2 - t1).count();
+	t1 = clock.now();
+	Stl_big.erase(Stl_big.find(5000));
+	t2 = clock.now();
+	time_span2 = duration_cast<microseconds>(t2 - t1).count();
+	std::cout << "my_time : " << time_span1 << "ms\n";
+	std::cout << "stl_time: " << time_span2 << "ms\n" << std::endl;
+	if (time_span1 > (time_span2 * 20))
+		std::cout << "erase at 5000:                   \033[1;31mko\033[0m\n";
+	else
+		std::cout << "erase at 5000:                   \033[1;32mok\033[0m\n";
+	std::cout << "--------------" << std::endl;
+
+	t1 = clock.now();
+	My_big.erase(My_big.find(9998));
+	t2 = clock.now();
+	time_span1 = duration_cast<microseconds>(t2 - t1).count();
+	t1 = clock.now();
+	Stl_big.erase(Stl_big.find(9998));
+	t2 = clock.now();
+	time_span2 = duration_cast<microseconds>(t2 - t1).count();
+	std::cout << "my_time : " << time_span1 << "ms\n";
+	std::cout << "stl_time: " << time_span2 << "ms\n" << std::endl;
+	if (time_span1 > (time_span2 * 20))
+		std::cout << "erase at 9998:                   \033[1;31mko\033[0m\n";
+	else
+		std::cout << "erase at 9998:                   \033[1;32mok\033[0m\n";
+	std::cout << "--------------" << std::endl;
+
+	My_big.insert(ft::make_pair<const int, std::string>(0, "a"));
+	My_big.insert(ft::make_pair<const int, std::string>(5000, "a"));
+	My_big.insert(ft::make_pair<const int, std::string>(9998, "a"));
+	Stl_big.insert(std::make_pair<const int, std::string>(0, "a"));
+	Stl_big.insert(std::make_pair<const int, std::string>(5000, "a"));
+	Stl_big.insert(std::make_pair<const int, std::string>(9998, "a"));
+
+	My2_big.insert(ft::make_pair<const int, std::string>(0, "a"));
+	My2_big.insert(ft::make_pair<const int, std::string>(5000, "a"));
+	My2_big.insert(ft::make_pair<const int, std::string>(9998, "a"));
+	Stl2_big.insert(std::make_pair<const int, std::string>(0, "a"));
+	Stl2_big.insert(std::make_pair<const int, std::string>(5000, "a"));
+	Stl2_big.insert(std::make_pair<const int, std::string>(9998, "a"));
+
+	std::cout << "erase from begin to end:" << std::endl;
+	std::cout << "------------------------" << std::endl;
+	t1 = clock.now();
+	My2_big.erase(My2_big.begin(), My2_big.end());
+	t2 = clock.now();
+	time_span1 = duration_cast<microseconds>(t2 - t1).count();
+	t1 = clock.now();
+	Stl2_big.erase(Stl2_big.begin(), Stl2_big.end());
+	t2 = clock.now();
+	time_span2 = duration_cast<microseconds>(t2 - t1).count();
+	std::cout << "my_time : " << time_span1 << "ms\n";
+	std::cout << "stl_time: " << time_span2 << "ms\n" << std::endl;
+	if (time_span1 > (time_span2 * 20))
+		std::cout << "erase all:                       \033[1;31mko\033[0m\n";
+	else
+		std::cout << "erase all:                       \033[1;32mok\033[0m\n";
+	std::cout << "-----------" << std::endl;
+
+	std::cout << "===============|SWAP|==============\n\n";
+
+	std::cout << "swap empty with full twice:" << std::endl;
+	std::cout << "---------------------------" << std::endl;
+	t1 = clock.now();
+	My2_big.swap(My_big);
+	My2_big.swap(My_big);
+	t2 = clock.now();
+	time_span1 = duration_cast<microseconds>(t2 - t1).count();
+	t1 = clock.now();
+	Stl2_big.swap(Stl_big);
+	Stl2_big.swap(Stl_big);
+	t2 = clock.now();
+	time_span2 = duration_cast<microseconds>(t2 - t1).count();
+	std::cout << "my_time : " << time_span1 << "ms\n";
+	std::cout << "stl_time: " << time_span2 << "ms\n" << std::endl;
+	if (time_span1 > (time_span2 * 20))
+		std::cout << "swap:                            \033[1;31mko\033[0m\n";
+	else
+		std::cout << "swap:                            \033[1;32mok\033[0m\n";
+	std::cout << "-----------" << std::endl;
+
+	std::cout << "===============|FIND|==============\n\n";
+	std::cout << "find 0, 5000, 1000:" << std::endl;
+	std::cout << "-------------------" << std::endl;
+
+	t1 = clock.now();
+	My2_big.find(0);
+	t2 = clock.now();
+	time_span1 = duration_cast<microseconds>(t2 - t1).count();
+	t1 = clock.now();
+	Stl2_big.find(0);
+	t2 = clock.now();
+	time_span2 = duration_cast<microseconds>(t2 - t1).count();
+	std::cout << "my_time : " << time_span1 << "ms\n";
+	std::cout << "stl_time: " << time_span2 << "ms\n" << std::endl;
+	if (time_span1 > (time_span2 * 20))
+		std::cout << "find 0:                          \033[1;31mko\033[0m\n";
+	else
+		std::cout << "find 0:                          \033[1;32mok\033[0m\n";
+	std::cout << "-----------" << std::endl;
+
+	t1 = clock.now();
+	My2_big.find(5000);
+	t2 = clock.now();
+	time_span1 = duration_cast<microseconds>(t2 - t1).count();
+	t1 = clock.now();
+	Stl2_big.find(5000);
+	t2 = clock.now();
+	time_span2 = duration_cast<microseconds>(t2 - t1).count();
+	std::cout << "my_time : " << time_span1 << "ms\n";
+	std::cout << "stl_time: " << time_span2 << "ms\n" << std::endl;
+	if (time_span1 > (time_span2 * 20))
+		std::cout << "find 5000:                       \033[1;31mko\033[0m\n";
+	else
+		std::cout << "find 5000:                       \033[1;32mok\033[0m\n";
+	std::cout << "--------------" << std::endl;
+
+	t1 = clock.now();
+	My2_big.find(10000);
+	t2 = clock.now();
+	time_span1 = duration_cast<microseconds>(t2 - t1).count();
+	t1 = clock.now();
+	Stl2_big.find(10000);
+	t2 = clock.now();
+	time_span2 = duration_cast<microseconds>(t2 - t1).count();
+	std::cout << "my_time : " << time_span1 << "ms\n";
+	std::cout << "stl_time: " << time_span2 << "ms\n" << std::endl;
+	if (time_span1 > (time_span2 * 20))
+		std::cout << "find 10000:                      \033[1;31mko\033[0m\n";
+	else
+		std::cout << "find 10000:                      \033[1;32mok\033[0m\n";
+	std::cout << "---------------" << std::endl;
 	return 0;
 
 }
