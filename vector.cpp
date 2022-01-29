@@ -6,7 +6,9 @@
 #include <unistd.h>
 
 typedef ft::vector<int, std::allocator<int> > ft_vec;
+typedef ft::vector<const int, std::allocator<const int> > ft_const_vec;
 typedef std::vector<int, std::allocator<int> > st_vec;
+typedef std::vector<const int, std::allocator<const int> > st_const_vec;
 
 void show(ft_vec mine, st_vec stl) {
 	ft::vector<int>::iterator it1 = mine.begin();
@@ -70,6 +72,7 @@ void show2(ft_vec vec1, ft_vec vec2)
 	ft::vector<int>::iterator it2 = vec1.end();
 	ft::vector<int>::iterator it3 = vec2.begin();
 	ft::vector<int>::iterator it4 = vec2.end();
+
 	it2--;
 	it4--;
 	std::cout << "mine_2(" << vec1.size() << " / " << vec1.capacity() << "): {";
@@ -83,7 +86,8 @@ void show2(ft_vec vec1, ft_vec vec2)
 }
 
 int main()
-{	
+{
+
 	using namespace std::chrono;
 	std::allocator<int> alloc;
 	ft_vec   mine(5, 10);
@@ -224,6 +228,13 @@ int main()
 	{
 		mine.push_back(j + 1);
 		stl.push_back(j + 1);
+		show(mine, stl);
+	}
+
+	for (int j = 0; j < 5; j++)
+	{
+		mine.pop_back();
+		stl.pop_back();
 		show(mine, stl);
 	}
 
@@ -532,6 +543,58 @@ int main()
 	time_span2 = duration_cast<microseconds>(t2 - t1).count();
 	std::cout << "my_time: " << time_span1 << "ms\n";
 	std::cout << "stl_time:" << time_span2 << "ms\n";
+
+	std::cout << "\nconstant versions" << std::endl;
+	ft_const_vec cVec(10, 10);
+	st_const_vec cSvec(10, 10);
+	ft::vector<int>::const_iterator cit1 = cVec.begin();
+	ft::vector<int>::const_iterator cit2 = cVec.end();
+	std::vector<int>::const_iterator cit3 = cSvec.begin();
+	std::vector<int>::const_iterator cit4 = cSvec.end();
+
+	std::cout << *cit1 << std::endl;
+	std::cout << *cit2 << std::endl;
+	std::cout << *cit3 << std::endl;
+	std::cout << *cit4 << std::endl;
+
+	cit1++;
+	cit2++;
+
+	std::cout << *cit1 << std::endl;
+	std::cout << *cit3 << std::endl;
+
+	std::cout << cVec.size() << std::endl;
+	std::cout << cVec.max_size() << std::endl;
+	//std::cout << cVec.resize(5) << std::endl;
+	std::cout << cVec.capacity() << std::endl;
+	std::cout << cVec.empty() << std::endl;
+	//std::cout << cVec.reserve(42) << std::endl;
+
+	std::cout << cSvec.size() << std::endl;
+	std::cout << cSvec.max_size() << std::endl;
+	//std::cout << cSvec.resize(5) << std::endl;
+	std::cout << cSvec.capacity() << std::endl;
+	std::cout << cSvec.empty() << std::endl;
+	//std::cout << cSvec.reserve(42) << std::endl;
+
+	std::cout << cVec[0] << std::endl;
+	std::cout << cVec.at(5) << std::endl;
+	std::cout << cVec.front() << std::endl;
+	std::cout << cVec.back() << std::endl;
+
+	std::cout << cSvec[0] << std::endl;
+	std::cout << cSvec.at(5) << std::endl;
+	std::cout << cSvec.front() << std::endl;
+	std::cout << cSvec.back() << std::endl;
+
+	//*cit1 = 5;
+	//*cit3 = 5;
+
+	//constVec.insert(constVec.begin(), 1);
+	//constVec.insert(constVec.begin() + 1, 10, 1);
+	//constVec.insert(constVec.begin() + 11, constVec.begin(), constVec.end());
+	//ft_const_vec constVec2 = constVec;
+	std::cout << "If it compiled then it's ok, decommenting any of the lines would make it not compile" << std::endl;
 
 	return 0;
 }

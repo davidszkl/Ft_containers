@@ -642,6 +642,40 @@ int main()
 	else
 		std::cout << "find 10000:                      \033[1;32mok\033[0m\n";
 	std::cout << "---------------" << std::endl;
+
+	std::cout << "============|CONSTANTS|============\n\n";
+	ft::map<const int, const std::string>	cMap2;
+	ft::map<const int, const std::string>	cMap(My.begin(), My.end());
+	std::map<const int, const std::string>	cSmap2;
+	std::map<const int, const std::string>	cSmap(Stl.begin(), Stl.end());
+	typedef ft::map<const int, const std::string>::const_iterator			Citer;
+	typedef ft::map<const int, const std::string>::const_reverse_iterator	CRiter;
+	typedef std::map<const int, const std::string>::const_iterator			SCiter;
+	typedef std::map<const int, const std::string>::const_reverse_iterator	SCRiter;
+	Citer placeholder;
+	CRiter placeholder2;
+	SCiter placeholder3;
+	SCRiter placeholder4;
+	(void)placeholder;
+	(void)placeholder2;
+	(void)placeholder3;
+	(void)placeholder4;
+
+	show_map(My);
+	Citer Cit = cMap.begin();
+	//Citer Cit2 = cMap.end();
+	//CRiter CRit = cMap.rbegin();
+	SCiter SCit = cSmap.begin();
+	//SCiter SCit2 = cSmap.end();
+	//SCRiter SCRit = cSmap.rbegin();
+
+	std::cout << Cit->first << std::endl;
+	//std::cout << Cit2->first << std::endl;
+	//std::cout << CRit->first << std::endl;
+	std::cout << SCit->first << std::endl;
+	//std::cout << SCit2->first << std::endl;
+	//std::cout << SCRit->first << std::endl;
+
 	return 0;
 
 }

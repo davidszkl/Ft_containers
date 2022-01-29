@@ -112,7 +112,7 @@ public:
 			const_map_iter(const const_map_iter& cpy) {*this = cpy;}
 			const_map_iter(const Node_ptr ptr, RBTree* rbt): NodePtr(ptr), Tree(rbt) {}
 			const_map_iter(const Node_ptr ptr, const RBTree* rbt): NodePtr(ptr), Tree(rbt) {}
-			const_map_iter& operator=(const map_iter& rhs) {
+			const_map_iter& operator=(const const_map_iter& rhs) {
 				NodePtr = rhs.NodePtr;
 				Tree	= rhs.Tree;
 				return *this;
@@ -220,7 +220,7 @@ public:
 			const_reverse_map_iter(const const_reverse_map_iter& cpy) {*this = cpy;}
 			const_reverse_map_iter(const Node_ptr ptr, RBTree* rbt): NodePtr(ptr), Tree(rbt) {}
 			const_reverse_map_iter(const Node_ptr ptr, const RBTree* rbt): NodePtr(ptr), Tree(rbt) {}
-			const_reverse_map_iter& operator=(const reverse_map_iter& rhs) {
+			const_reverse_map_iter& operator=(const const_reverse_map_iter& rhs) {
 				NodePtr = rhs.NodePtr;
 				Tree	= rhs.Tree;
 				return *this;
