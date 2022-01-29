@@ -387,7 +387,7 @@ int main()
 	else
 		std::cout << "false" << std::endl;
 
-		std::cout << "mine <= mine2 --> ";
+	std::cout << "mine <= mine2 --> ";
 	if (mine <= mine2)
  		std::cout << "true" << std::endl;
 	else
