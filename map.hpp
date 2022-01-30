@@ -52,11 +52,12 @@ public:
 
 	class map_iter : public ft::iterator<ft::random_access_iterator_tag, T, difference_type, pointer, reference>
 		{
+		public:
 			Node_ptr	NodePtr;
 			RBTree*		Tree;
-	public:
+	
 			map_iter(): NodePtr(nullptr), Tree(nullptr) {}
-			map_iter(const map_iter& cpy) {*this = cpy;}
+			map_iter(const map_iter& cpy): NodePtr(cpy.NodePtr), Tree(cpy.Tree) {}
 			map_iter(Node_ptr ptr, RBTree* rbt): NodePtr(ptr), Tree(rbt) {}
 			map_iter& operator=(const map_iter& rhs) {
 				NodePtr = rhs.NodePtr;
@@ -104,14 +105,15 @@ public:
 
 		class const_map_iter : public ft::iterator<ft::random_access_iterator_tag, T, difference_type, pointer, reference>
 		{	
-			Node_ptr	NodePtr;
-			RBTree*		Tree;
-	public:
+		public:	
+			Node_ptr			NodePtr;
+			const RBTree*		Tree;
+	
 			const_map_iter(): NodePtr(nullptr), Tree(nullptr) {}
-			const_map_iter(const map_iter& cpy) {*this = cpy;}
-			const_map_iter(const const_map_iter& cpy) {*this = cpy;}
-			const_map_iter(const Node_ptr ptr, RBTree* rbt): NodePtr(ptr), Tree(rbt) {}
-			const_map_iter(const Node_ptr ptr, const RBTree* rbt): NodePtr(ptr), Tree(rbt) {}
+			const_map_iter(const map_iter& cpy): NodePtr(cpy.NodePtr), Tree(cpy.Tree) {}
+			const_map_iter(const const_map_iter& cpy): NodePtr(cpy.NodePtr), Tree(cpy.Tree) {}
+			const_map_iter(const Node_ptr& ptr, RBTree* rbt): NodePtr(ptr), Tree(rbt) {}
+			const_map_iter(const Node_ptr& ptr, const RBTree* rbt): NodePtr(ptr), Tree(rbt) {}
 			const_map_iter& operator=(const const_map_iter& rhs) {
 				NodePtr = rhs.NodePtr;
 				Tree	= rhs.Tree;
@@ -158,12 +160,12 @@ public:
 
 		class reverse_map_iter : public ft::iterator<ft::random_access_iterator_tag, T, difference_type, pointer, reference>
 		{
+		public:
 			Node_ptr	NodePtr;
 			RBTree*		Tree;
 
-	public:
 			reverse_map_iter(): NodePtr(nullptr), Tree(nullptr) {}
-			reverse_map_iter(const reverse_map_iter& cpy) {*this = cpy;}
+			reverse_map_iter(const reverse_map_iter& cpy): NodePtr(cpy.NodePtr), Tree(cpy.Tree)  {}
 			reverse_map_iter(Node_ptr ptr, RBTree* rbt): NodePtr(ptr), Tree(rbt) {}
 			reverse_map_iter& operator=(const reverse_map_iter& rhs) {
 				NodePtr = rhs.NodePtr;
@@ -211,13 +213,15 @@ public:
 
 		class const_reverse_map_iter : public ft::iterator<ft::random_access_iterator_tag, T, difference_type, pointer, reference>
 		{
-			Node_ptr	NodePtr;
-			RBTree*		Tree;
+		public:
 
-	public:
+			Node_ptr			NodePtr;
+			const RBTree*		Tree;
+
+	
 			const_reverse_map_iter(): NodePtr(nullptr), Tree(nullptr) {}
-			const_reverse_map_iter(const reverse_map_iter& cpy) {*this = cpy;}
-			const_reverse_map_iter(const const_reverse_map_iter& cpy) {*this = cpy;}
+			const_reverse_map_iter(const reverse_map_iter& cpy): NodePtr(cpy.NodePtr), Tree(cpy.Tree)  {}
+			const_reverse_map_iter(const const_reverse_map_iter& cpy): NodePtr(cpy.NodePtr), Tree(cpy.Tree)  {}
 			const_reverse_map_iter(const Node_ptr ptr, RBTree* rbt): NodePtr(ptr), Tree(rbt) {}
 			const_reverse_map_iter(const Node_ptr ptr, const RBTree* rbt): NodePtr(ptr), Tree(rbt) {}
 			const_reverse_map_iter& operator=(const const_reverse_map_iter& rhs) {
@@ -303,6 +307,7 @@ public:
 	iterator					end()	 {return iterator(_rbt._leaf , &_rbt);}
 	reverse_iterator			rbegin() {return reverse_iterator(_rbt.max(_rbt.root()) , &_rbt);}
 	reverse_iterator			rend()	 {return reverse_iterator(nullptr , &_rbt);}
+
 	const_iterator				begin()	 const {return const_iterator(_rbt.min(_rbt.root()) , &_rbt);}
 	const_iterator				end()	 const {return const_iterator(_rbt._leaf + 1 , &_rbt);}
 	const_reverse_iterator		rbegin() const {return const_reverse_iterator(_rbt.max(_rbt.root()) , &_rbt);}
@@ -407,7 +412,7 @@ template <class InputIterator>
 
 //-----------------------------------------<< Allocator >>-------------------------------------------------
 
-	allocator_type get_allocator() const {return _alloc;}
+	allocator_type get_allocator() const {return allocator_type(_rbt._alloc);}
 
 };
 

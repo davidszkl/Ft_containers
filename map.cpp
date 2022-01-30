@@ -9,17 +9,29 @@ void show_map(ft::map<U, V> & map ) {
 		std::cout << "empty\n";
 		return ;
 	}
-	typename ft::RBT<ft::map<int, std::string> >::Node_ptr node =  map._rbt.min(map._rbt.root());
+	typename ft::RBT<ft::map<U, V> >::Node_ptr node =  map._rbt.min(map._rbt.root());
 	for (size_t n = 0; n < map.size(); n++, node = map._rbt.successor(node))
 		std::cout << "map[" << n << "][key " << node->data.first << "] = " << map[node->data.first] << std::endl;
 	std::cout << std::endl;
 }
 
-template <typename U, typename V >
-void show_map(std::map< U, V> & map) {
-	for (size_t n = 0; n < 9; n++)
-		std::cout << "map[" << n << "] = " << map[n] << std::endl;
+void show_map(ft::map<const int, const std::string> & map ) {
+	if (map.empty())
+	{
+		std::cout << "empty\n";
+		return ;
+	}
+	ft::RBT<ft::map<const int, const std::string> >::Node_ptr node =  map._rbt.min(map._rbt.root());
+	for (size_t n = 0; n < map.size(); n++, node = map._rbt.successor(node))
+		std::cout << "map[" << n << "][key " << node->data.first << "] = " << map[node->data.first] << std::endl;
+	std::cout << std::endl;
 }
+
+// template <typename U, typename V >
+// void show_map(std::map< U, V> & map) {
+// 	for (size_t n = 0; n < 9; n++)
+// 		std::cout << "map[" << n << "] = " << map[n] << std::endl;
+// }
 
 int main()
 {
@@ -42,7 +54,7 @@ int main()
 	ft::map<int, std::string>	rangeConstruct(My.begin(), My.end());
 	show_map(My);
 	show_map(copy);
-	show_map(Stl);
+//	show_map(Stl);
 	show_map(rangeConstruct);
 
 	std::cout	<< "==========|MAP_ITERATOR|============\n";
@@ -242,7 +254,7 @@ int main()
 	std::cout << "--------------Search----------------\n";
 
 	show_map(My);
-	show_map(Stl);
+	//show_map(Stl);
 	std::cout << "Search key 3 " << std::endl;
 	std::cout << "key = " << My.find(3)->first << std::endl;
 	std::cout << "Search non-existent key " << std::endl;
@@ -603,8 +615,8 @@ int main()
 	Stl2_big.find(0);
 	t2 = clock.now();
 	time_span2 = duration_cast<microseconds>(t2 - t1).count();
-	std::cout << "my_time : " << time_span1 << "ms\n";
-	std::cout << "stl_time: " << time_span2 << "ms\n" << std::endl;
+	std::cout << "my_time : " << time_span1 << "ms" << std::endl;
+	std::cout << "stl_time: " << time_span2 << "ms" << std::endl;
 	if (time_span1 > (time_span2 * 20))
 		std::cout << "find 0:                          \033[1;31mko\033[0m\n";
 	else
@@ -661,20 +673,26 @@ int main()
 	(void)placeholder3;
 	(void)placeholder4;
 
-	show_map(My);
-	Citer Cit = cMap.begin();
-	//Citer Cit2 = cMap.end();
-	//CRiter CRit = cMap.rbegin();
+	show_map(cMap);
+	Citer Cit = cMap.begin();;
+	Citer Cit2 = cMap.end();
+	CRiter CRit = cMap.rbegin();
 	SCiter SCit = cSmap.begin();
-	//SCiter SCit2 = cSmap.end();
-	//SCRiter SCRit = cSmap.rbegin();
+	SCiter SCit2 = cSmap.end();
+	SCRiter SCRit = cSmap.rbegin();
 
 	std::cout << Cit->first << std::endl;
-	//std::cout << Cit2->first << std::endl;
-	//std::cout << CRit->first << std::endl;
+	std::cout << Cit2->first << std::endl;
+	std::cout << CRit->first << std::endl;
 	std::cout << SCit->first << std::endl;
-	//std::cout << SCit2->first << std::endl;
-	//std::cout << SCRit->first << std::endl;
+	std::cout << SCit2->first << std::endl;
+	std::cout << SCRit->first << std::endl;
+
+	cMap.size();
+	cMap.max_size();
+	cMap.empty();
+
+	std::cout << cMap.find(-1)->first << std::endl;
 
 	return 0;
 

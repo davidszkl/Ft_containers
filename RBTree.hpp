@@ -381,7 +381,7 @@ public:
 	}
 
 	Node_ptr search(Node_ptr start, key_type key) const {
-		if (start == _leaf || key == start->data.first)
+		if (key == start->data.first || start == _leaf)
 			return start;
 		if (key < start->data.first)
 			return search(start->Lchild, key);
