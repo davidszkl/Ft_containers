@@ -88,7 +88,7 @@ namespace ft
 			if (!n)
 			{
 				_arr = _alloc.allocate(1);
-				//_arr[0] = 0;
+				_arr[0] = 0;
 			}
 			else
 			{

@@ -6,9 +6,9 @@
 #include <unistd.h>
 
 typedef ft::vector<int, std::allocator<int> > ft_vec;
-typedef ft::vector<const int, std::allocator<const int> > ft_const_vec;
+typedef const ft::vector< int, std::allocator< int> > ft_const_vec;
 typedef std::vector<int, std::allocator<int> > st_vec;
-typedef std::vector<const int, std::allocator<const int> > st_const_vec;
+typedef const std::vector<int, std::allocator< int> > st_const_vec;
 
 void show(ft_vec mine, st_vec stl) {
 	ft::vector<int>::iterator it1 = mine.begin();
@@ -548,17 +548,17 @@ int main()
 	ft_const_vec cVec(10, 10);
 	st_const_vec cSvec(10, 10);
 	ft::vector<int>::const_iterator cit1 = cVec.begin();
-	ft::vector<int>::const_iterator cit2 = cVec.end();
+	//ft::vector<int>::const_iterator cit2 = cVec.end();
 	std::vector<int>::const_iterator cit3 = cSvec.begin();
-	std::vector<int>::const_iterator cit4 = cSvec.end();
+	//std::vector<int>::const_iterator cit4 = cSvec.end();
 
 	std::cout << *cit1 << std::endl;
-	std::cout << *cit2 << std::endl;
+	//std::cout << *cit2 << std::endl;
 	std::cout << *cit3 << std::endl;
-	std::cout << *cit4 << std::endl;
+	//std::cout << *cit4 << std::endl;
 
 	cit1++;
-	cit2++;
+	cit3++;
 
 	std::cout << *cit1 << std::endl;
 	std::cout << *cit3 << std::endl;
