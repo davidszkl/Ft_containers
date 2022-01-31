@@ -12,7 +12,7 @@ public:
     typedef Container   container_type;
     typedef size_t      size_type;
 
-    explicit stack(const container_type& ctnr = container_type()): _arr(cntr) {}
+    explicit stack(const container_type& cntr = container_type()): c(cntr) {}
 
     stack &operator=(const stack &other) {
         if (this != &other)
@@ -22,16 +22,16 @@ public:
 
 private:
 
-    container_type  _arr;
+    container_type  c;
 
 public:
 
-    bool        empty(  const {return _arr.empty();}
-    size_type   size()  const {return _arr.size();}
-    value_type&         top() {return _arr.back();}
-    const value_type&   top() const {return _arr.back();}
-    void push (const value_type& val) {_arr.push_back(val);}
-    void pop() {_arr.pop_back();}
+    bool				empty()	const	{return c.empty();}
+    size_type			size()	const	{return c.size();}
+    value_type&			top()			{return c.back();}
+    const value_type&	top()	const	{return c.back();}
+    void				push(const value_type& val) {c.push_back(val);}
+    void				pop()						{c.pop_back();}
 
 };
 

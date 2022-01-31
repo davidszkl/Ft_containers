@@ -1,8 +1,8 @@
 #pragma once
 #include <functional>	// std::less
-#include "pair.hpp"
-#include "RBTree.hpp"
-#include "utils.hpp"
+#include "utils/pair.hpp"
+#include "utils/RBTree.hpp"
+#include "utils/utils.hpp"
 
 namespace ft
 { //ft
