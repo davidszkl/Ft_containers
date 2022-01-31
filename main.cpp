@@ -669,21 +669,21 @@ std::cout << "\n\n__________STACK____________\n\n" << std::endl;
 	std::cout << Stl.size() << std::endl;
 
 	std::cout << "pop 3" << std::endl;
+	std::cout << My.top() << std::endl;
+	My.pop();
+	std::cout << My.top() << std::endl;
+	My.pop();
+	std::cout << My.top() << std::endl;
+	My.pop();
+
 	std::cout << "pop 3" << std::endl;
-	My.pop();
-	std::cout << My.top() << std::endl;
-	My.pop();
-	std::cout << My.top() << std::endl;
-	My.pop();
-	std::cout << My.top() << std::endl;
 	std::cout << Stl.top() << std::endl;
 	Stl.pop();
 	std::cout << Stl.top() << std::endl;
 	Stl.pop();
 	std::cout << Stl.top() << std::endl;
 	Stl.pop();
-	
-	
+
 	std::cout << "empty ?" << std::endl;
 	if (My.empty())
     	std::cout << "empty" << std::endl;
