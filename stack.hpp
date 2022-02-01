@@ -20,7 +20,7 @@ public:
         return (*this);
     }
 
-private:
+protected:
 
     container_type  c;
 
