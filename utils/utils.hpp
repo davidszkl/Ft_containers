@@ -129,8 +129,6 @@
 	template<> struct is_integral_base<long long>					: public std::true_type {};
 	template<> struct is_integral_base<unsigned long long>			: public std::true_type {};
 
-
-
 	template<> struct is_integral_base<const bool>						: public std::true_type {};
 	template<> struct is_integral_base<const char>						: public std::true_type {};
 	template<> struct is_integral_base<const unsigned char>				: public std::true_type {};
@@ -145,8 +143,6 @@
 	template<> struct is_integral_base<const long long>					: public std::true_type {};
 	template<> struct is_integral_base<const unsigned long long>		: public std::true_type {};
 
-
-
 	template<> struct is_integral_base<volatile bool>						: public std::true_type {};
 	template<> struct is_integral_base<volatile char>						: public std::true_type {};
 	template<> struct is_integral_base<volatile unsigned char>				: public std::true_type {};
@@ -160,7 +156,6 @@
 	template<> struct is_integral_base<volatile unsigned long>				: public std::true_type {};
 	template<> struct is_integral_base<volatile long long>					: public std::true_type {};
 	template<> struct is_integral_base<volatile unsigned long long>			: public std::true_type {};
-
 
 	template<class T> struct is_integral : public is_integral_base<T> {};
 

@@ -58,22 +58,22 @@ namespace ft
 			_arr = (buff - _size);
 		}
 
-		void	realloc_from(size_type n, size_type from) {
-			size_type tmp_cap = _cap;
-			while (tmp_cap < n)
-				tmp_cap *= 2;
-			pointer buff = _alloc.allocate(tmp_cap);
-			pointer ptr1 = &_arr[from];
-			pointer ptr2 = &buff[0];
-			for (size_type n = 0; n < _size; n++, ptr1++, ptr2++)
-			{
-				_alloc.construct(ptr2, *ptr1);
-				_alloc.destroy(ptr1);
-			}
-			_alloc.deallocate(_arr, _cap);
-			_cap = tmp_cap;
-			_arr = buff;
-		}
+		// void	realloc_from(size_type n, size_type from) {
+		// 	size_type tmp_cap = _cap;
+		// 	while (tmp_cap < n)
+		// 		tmp_cap *= 2;
+		// 	pointer buff = _alloc.allocate(tmp_cap);
+		// 	pointer ptr1 = &_arr[from];
+		// 	pointer ptr2 = &buff[0];
+		// 	for (size_type n = 0; n < _size; n++, ptr1++, ptr2++)
+		// 	{
+		// 		_alloc.construct(ptr2, *ptr1);
+		// 		_alloc.destroy(ptr1);
+		// 	}
+		// 	_alloc.deallocate(_arr, _cap);
+		// 	_cap = tmp_cap;
+		// 	_arr = buff;
+		// }
 	
 	public:
 
@@ -108,7 +108,10 @@ namespace ft
 			_cap(1)
 		{
 			if (first > last)
+			{
+				std::cout << "mismatched iterators" << std::endl;
 				return ;
+			}
 			InputIterator tmp = first;
 			while (tmp != last)
 			{
@@ -225,7 +228,7 @@ namespace ft
 		void assign (InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type*  = nullptr) {
 			if (first >  last)
 			{
-				std::cout <<  "mis-matched iterators\n";
+				std::cout <<  "mismatched iterators\n";
 				return ;
 			}
 			size_type n = last - first;

@@ -27,10 +27,11 @@ public:
 	typedef RBT<ft::map<Key, T, Compare>, allocator_type>	RBTree;
 	typedef typename RBTree::Node_ptr						Node_ptr;
 
-	RBTree										_rbt; //TO ERASE
+	//RBTree										_rbt;
+	
 private:
 
-	// RBTree									_rbt;
+	RBTree										_rbt;
 	Compare										_comp;
 	std::allocator<pair<const key_type, T> >	_alloc;
 

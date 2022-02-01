@@ -27,9 +27,17 @@ void show_map(ft::map<U, V> & map ) {
 		std::cout << "empty\n";
 		return ;
 	}
-	typename ft::RBT<ft::map<U, V> >::Node_ptr node =  map._rbt.min(map._rbt.root());
-	for (size_t n = 0; n < map.size(); n++, node = map._rbt.successor(node))
-		std::cout << "map[" << n << "][key " << node->data.first << "] = " << map[node->data.first] << std::endl;
+	//typename ft::RBT<ft::map<U, V> >::Node_ptr node =  map._rbt.min(map._rbt.root());
+	typename ft::map<U, V>::iterator it = map.begin();
+	typename ft::map<U, V>::iterator it2 = map.end();
+	size_t n = 0;
+	while (it != it2)
+	{
+		std::cout << "map[" << n++ << "][key " << it->first << "] = " << it->second << std::endl;
+		it++;
+	}
+	//for (size_t n = 0; n < map.size(); n++, node = map._rbt.successor(node))
+	//	std::cout << "map[" << n << "][key " << node->data.first << "] = " << map[node->data.first] << std::endl;
 	std::cout << std::endl;
 }
 
@@ -39,9 +47,17 @@ void show_map(ft::map<const int, const std::string> & map ) {
 		std::cout << "empty\n";
 		return ;
 	}
-	ft::RBT<ft::map<const int, const std::string> >::Node_ptr node =  map._rbt.min(map._rbt.root());
-	for (size_t n = 0; n < map.size(); n++, node = map._rbt.successor(node))
-		std::cout << "map[" << n << "][key " << node->data.first << "] = " << map[node->data.first] << std::endl;
+	ft::map<const int, const std::string>::iterator it = map.begin();
+	ft::map<const int, const std::string>::iterator it2 = map.end();
+	size_t n = 0;
+	while (it != it2)
+	{
+		std::cout << "map[" << n++ << "][key " << it->first << "] = " << it->second << std::endl;
+		it++;
+	}
+	//ft::RBT<ft::map<const int, const std::string> >::Node_ptr node =  map._rbt.min(map._rbt.root());
+	//for (size_t n = 0; n < map.size(); n++, node = map._rbt.successor(node))
+	//	std::cout << "map[" << n << "][key " << node->data.first << "] = " << map[node->data.first] << std::endl;
 	std::cout << std::endl;
 }
 
@@ -250,10 +266,9 @@ int main()
 	show(mine, stl);
 
 	std::cout << "-------VALUE_ASSIGN(mine2 assigned with 10,15 ; stl assigned with 10,15) :" << std::endl;
-	std::cout << "CAP = " << mine2.capacity() << std::endl;
 	mine2.assign(10, 15);
 	stl2.assign(10, 15);
-	std::cout << mine2.size() << std::endl;
+	std::cout << "size now = " << mine2.size() << std::endl;
 	show1(mine2, stl2);
 	show(mine, stl);
 
@@ -706,7 +721,7 @@ std::cout << "\n\n__________MAP____________\n\n" << std::endl;
 	ft::map<int, std::string>	My;
 	ft::map<int, std::string>	copy(My);
 	std::map<int, std::string>	Stl;
-	typedef ft::map<int, std::string>::iterator iter;
+	typedef ft::map<int, std::string>::iterator			iter;
 	typedef ft::map<int, std::string>::reverse_iterator Riter;
 	//typedef std::map<int, std::string>::reverse_iterator Stl_Riter;
 
@@ -727,12 +742,13 @@ std::cout << "\n\n__________MAP____________\n\n" << std::endl;
 	std::cout	<< "==========|MAP_ITERATOR|============\n";
 	std::cout	<< "\n-----------CONSTRUCTORS-------------\n";
 	iter it1;
+	it1 = My.begin();
 	std::cout << "default:                          \033[1;32;mok\033[0m\n";
-	iter it2(My._rbt.root(), &My._rbt);
-	std::cout << "parameterized:                    \033[1;32;mok\033[0m\n";
-	iter it3(it2);
+	//iter it2(My._rbt.root(), &My._rbt);
+	//std::cout << "parameterized:                    \033[1;32;mok\033[0m\n";
+	iter it2(it1);
 	std::cout << "copy:                             \033[1;32;mok\033[0m\n";
-	it1 = it3; 
+	it1 = it2; 
 	std::cout << "assignement:                      \033[1;32;mok\033[0m\n";
 	Riter Rit1;
 	Riter Rit2;
@@ -740,8 +756,7 @@ std::cout << "\n\n__________MAP____________\n\n" << std::endl;
 	std::cout << "-----------DEREFERENCING------------\n";
 	std::cout << "it1 = " << (*it1).first << std::endl;
 	std::cout << "it2 = " << it2->first << std::endl;
-	std::cout << "it3 = " << (*it3).first << std::endl;
-	if ((*it1).first != (*it2).first || (*it1).first != (*it3).first)
+	if ((*it1).first != (*it2).first)
 	{
 		std::cout << "'*'  operator:                    \033[1;31mko\033[0m\n";
 		std::cout << "'->' operator:                    \033[1;31mko\033[0m\n";
@@ -751,8 +766,8 @@ std::cout << "\n\n__________MAP____________\n\n" << std::endl;
 		std::cout << "'*' operator:                     \033[1;32mok\033[0m\n";
 		std::cout << "'->' operator:                    \033[1;32mok\033[0m\n";
 	}
-	*it3 = *it2;
-	std::cout << "it3 = it2 = " << (*it3).first << std::endl;
+	*it2 = *it1;
+	std::cout << "it2 = it1 = " << (*it2).first << std::endl;
 	std::cout << "lvalue:                           \033[1;32mok\033[0m\n";
 
 	std::cout << "-----------INCREMENTATION-----------\n";
@@ -807,9 +822,9 @@ std::cout << "\n\n__________MAP____________\n\n" << std::endl;
 	std::cout << "map[2] = " << My[2] << std::endl;
 	std::cout << "map[3] = " << My[3] << std::endl;
 	My[4];
-	std::cout << "map[4] (doesn't exist yet) = " << My[4] << std::endl;
+	std::cout << "map[4] (doesn't exist yet) = " << My[42] << std::endl;
 	
-	std::cout << "map[4] (exists now) = " << My[4] << std::endl;
+	std::cout << "map[4] (exists now) = " << My[42] << std::endl;
 	std::cout << "map[-1] = " << My[-1] << std::endl;
 	std::cout << "stl[1] = " << Stl[1] << std::endl;
 	std::cout << "stl[2] = " << Stl[2] << std::endl;
@@ -828,7 +843,7 @@ std::cout << "\n\n__________MAP____________\n\n" << std::endl;
 	std::cout << a.second << " already exists" << std::endl;
 	a = My.insert(ft::make_pair<const int, std::string>(5, "salut"));
 	std::cout << a.second << " doesn't exist" <<std::endl;
-	a = My.insert(ft::make_pair<const int, std::string>(6, "salut"));
+	a = My.insert(ft::make_pair<const int, std::string>(41, "salut"));
 	std::cout << a.second << " doesn't exist" <<std::endl;
 	a = My.insert(ft::make_pair<const int, std::string>(1, "bonjour"));
 	std::cout << a.second << " already exists" << std::endl;
@@ -846,17 +861,13 @@ std::cout << "\n\n__________MAP____________\n\n" << std::endl;
 
 	std::cout << "-------------range_insert------------\n";
 
-		copy = My;
-		ft::map<int, std::string>	tmp_map1;
-		show_map(copy);
-		show_map(tmp_map1);
-		tmp_map1.insert(copy.begin(), copy.end());
-		show_map(copy);
-		show_map(tmp_map1);
-		std::cout << "TMP BEFORE CLEAR " << std::endl;
-		tmp_map1._rbt.show_tree(tmp_map1._rbt.root());
-		std::cout << "COPY BEFORE CLEAR " << std::endl;
-		copy._rbt.show_tree(copy._rbt.root());
+	copy = My;
+	ft::map<int, std::string>	tmp_map1;
+	show_map(copy);
+	show_map(tmp_map1);
+	tmp_map1.insert(copy.begin(), copy.end());
+	show_map(copy);
+	show_map(tmp_map1);
 
 	std::cout << "range insert :                    \033[1;32mok\033[0m\n";
 	 
